@@ -1,4 +1,4 @@
 # slurky
-###### scuffed sly trainer
+### scuffed sly trainer
 
 train some hoes
