@@ -1,6 +1,6 @@
 ﻿namespace slurky
 {
-    partial class Form1
+    partial class SlurkyTrainer
     {
         /// <summary>
         /// Required designer variable.
@@ -28,23 +28,28 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
+            this.bgworker = new System.ComponentModel.BackgroundWorker();
             this.SuspendLayout();
             // 
-            // Form1
+            // bgworker
+            // 
+            this.bgworker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.bgworker_DoWork);
+            // 
+            // SlurkyTrainer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Name = "Form1";
-            this.Text = "Form1";
+            this.ClientSize = new System.Drawing.Size(624, 441);
+            this.Name = "SlurkyTrainer";
+            this.Text = "Slurky";
+            this.Load += new System.EventHandler(this.SlurkyTrainer_Load);
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private System.ComponentModel.BackgroundWorker backgroundWorker1;
+        private System.ComponentModel.BackgroundWorker bgworker;
     }
 }
 
