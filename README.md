@@ -1,7 +1,7 @@
 # slurky
 ### scuffed sly trainer
 
-train some hoes
+train some hoses
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="/media/slurk.png">
