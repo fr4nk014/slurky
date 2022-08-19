@@ -35,6 +35,7 @@ namespace slurky
             public static UInt64 Sly2NTSC = 0x2DE2F0;
             public static UInt64 Sly2PAL = 0x2E55A0;
         }
+        UInt64 ActCharOffset = 0x0;
         public class EntityStruct
         {
             public static UInt64 ID;
@@ -44,38 +45,20 @@ namespace slurky
             public static UInt64 TransformComponent;
         }
 
-        public class Sly2EntStruct : EntityStruct
-        {
-            public Sly2EntStruct()
-            {
-                ID = 0x18;
-                God = 0x298;
-                Undetectable = 0x11AC;
-                InfJumps = 0x2E8;
-                TransformComponent = 0x58;
-            }
-        }
+        public class CurrEntStruct : EntityStruct{}
 
-        public class CurrEntStruct : EntityStruct
-        {
-            public CurrEntStruct()
-            {
-                ID = 0;
-                God = 0;
-                Undetectable = 0;
-                InfJumps = 0;
-                TransformComponent = 0;
-            }
-        }
-
-        public static void FillActStruct(string build)
+        public void FillActChar(string build)
         {
             if(build.StartsWith("Sly 2"))
             {
-                Sly2EntStruct mySly2EntStruct = new Sly2EntStruct();
+                CurrEntStruct.ID = 0x18;
+                CurrEntStruct.God = 0x298;
+                CurrEntStruct.Undetectable = 0x11AC;
+                CurrEntStruct.InfJumps = 0x2E8;
+                CurrEntStruct.TransformComponent = 0x58;
 
-                CurrEntStruct myCurrEntStruct = mySly2EntStruct; //WTF HELP NIV
-
+                if(build == "Sly 2 NTSC") ActCharOffset = ActCharOffsets.Sly2NTSC;
+                else if (build == "Sly 2 PAL") ActCharOffset = ActCharOffsets.Sly2PAL;
             }
         }
 
@@ -182,7 +165,7 @@ namespace slurky
                 }
                 else
                 {
-                    FillActStruct(CurrentBuild);
+                    FillActChar(CurrentBuild);
                     processStatuslabel.Invoke((MethodInvoker)delegate
                     {
                         processStatuslabel.Text = CurrentBuild;
@@ -229,7 +212,7 @@ namespace slurky
 
             if (CurrentBuild == "Sly 2 NTSC")
             {
-                index = GetActiveCharacterData(EntityStruct.ID);
+                index = GetActiveCharacterData(CurrEntStruct.ID);
             }
 
 
@@ -263,7 +246,7 @@ namespace slurky
                 actEntName.ForeColor = colorToUse;
             });
 
-            UInt64 godStatus = GetActiveCharacterData(EntityStruct.God);
+            UInt64 godStatus = GetActiveCharacterData(CurrEntStruct.God);
             if (godStatus == 1)
             {
                 cb_god.Invoke((MethodInvoker)delegate
@@ -279,7 +262,7 @@ namespace slurky
                 });
             }
 
-            UInt64 undetecStatus = GetActiveCharacterData(EntityStruct.Undetectable);
+            UInt64 undetecStatus = GetActiveCharacterData(CurrEntStruct.Undetectable);
             if (undetecStatus == 1)
             {
                 cb_ignore.Invoke((MethodInvoker)delegate
@@ -299,7 +282,7 @@ namespace slurky
             float tempX = 0, tempY = 0, tempZ = 0;
             while (true)
             {
-                float tempPos = GetActiveCharacterData(EntityStruct.TransformComponent, TransformComponent.Position + help);
+                float tempPos = GetActiveCharacterData(CurrEntStruct.TransformComponent, TransformComponent.Position + help);
                 help += 4;
                 if(help == 0x4)
                 {
@@ -319,18 +302,12 @@ namespace slurky
                 }
             }
 
-            actCoordX.Invoke((MethodInvoker)delegate
-            {
-                actCoordX.Text = tempX.ToString("f5");
-            });
-            actCoordY.Invoke((MethodInvoker)delegate
-            {
-                actCoordY.Text = tempY.ToString("f5");
-            });
-            actCoordZ.Invoke((MethodInvoker)delegate
-            {
-                actCoordZ.Text = tempZ.ToString("f5");
-            });
+            DelegateThisShit(actCoordX, tempX.ToString("f5"));
+            DelegateThisShit(actCoordY, tempY.ToString("f5"));
+            DelegateThisShit(actCoordZ, tempZ.ToString("f5"));
+
+            float tempScale = GetActiveCharacterData(CurrEntStruct.TransformComponent, TransformComponent.Scale);
+            DelegateThisShit(actScale, tempScale.ToString("f5"));
 
 
         }
@@ -338,14 +315,14 @@ namespace slurky
         UInt64 GetActiveCharacterData(UInt64 offset)
         {
             // thanks niv
-            return m.ReadUInt((BaseAddress + ActCharOffsets.Sly2NTSC).ToString("X8") + "," + (BaseAddress + offset).ToString("X8"));
+            return m.ReadUInt((BaseAddress + ActCharOffset).ToString("X8") + "," + (BaseAddress + offset).ToString("X8"));
         }
 
         
 
         float GetActiveCharacterData(UInt64 offset, UInt64 offset2)
         {
-            return m.ReadFloat((BaseAddress + ActCharOffsets.Sly2NTSC).ToString("X8") + "," + (BaseAddress + offset).ToString("X8") + "," + (BaseAddress + offset2).ToString("X8"), round: false);
+            return m.ReadFloat((BaseAddress + ActCharOffset).ToString("X8") + "," + (BaseAddress + offset).ToString("X8") + "," + (BaseAddress + offset2).ToString("X8"), round: false);
         }
         void SetActiveCharacterData(UInt64 offset, int setTo, bool freeze = false, bool unfreeze = false)
         {
@@ -353,14 +330,33 @@ namespace slurky
             {
                 if(!unfreeze)
                 {
-                    m.FreezeValue((BaseAddress + ActCharOffsets.Sly2NTSC).ToString("X8") + "," + (BaseAddress + offset).ToString("X8"), "int", setTo.ToString());
+                    m.FreezeValue((BaseAddress + ActCharOffset).ToString("X8") + "," + (BaseAddress + offset).ToString("X8"), "int", setTo.ToString());
                     return;
                 }
 
-                m.UnfreezeValue((BaseAddress + ActCharOffsets.Sly2NTSC).ToString("X8") + "," + (BaseAddress + offset).ToString("X8"));
+                m.UnfreezeValue((BaseAddress + ActCharOffset).ToString("X8") + "," + (BaseAddress + offset).ToString("X8"));
                 return;
             }
-            m.WriteMemory((BaseAddress + ActCharOffsets.Sly2NTSC).ToString("X8") + "," + (BaseAddress + offset).ToString("X8"), "int", setTo.ToString());
+            m.WriteMemory((BaseAddress + ActCharOffset).ToString("X8") + "," + (BaseAddress + offset).ToString("X8"), "int", setTo.ToString());
+        }
+
+        void SetActiveCharacterData(UInt64 offset, UInt64 offset2, string setTo, bool vec3 = false, string writeType = "float")
+        {
+            m.WriteMemory((BaseAddress + ActCharOffset).ToString("X8") + "," + (BaseAddress + offset).ToString("X8") + "," + (BaseAddress + offset2).ToString("X8"), writeType, setTo);
+            
+            if(vec3)
+            {
+                UInt64 toAdd = 0x14;
+                while(true)
+                {
+                    m.WriteMemory((BaseAddress + ActCharOffset).ToString("X8") + "," + (BaseAddress + offset).ToString("X8") + "," + (BaseAddress + offset2 + toAdd).ToString("X8"), type: writeType, write: setTo);
+                    toAdd+=0x14;
+                    if(toAdd > 0x28)
+                    {
+                        break;
+                    }
+                }
+            }
         }
 
         public string GetPhrogName()                //  phrog = process
@@ -464,20 +460,20 @@ namespace slurky
         {
             if(cb_god.Checked) 
             {
-                SetActiveCharacterData(EntityStruct.God, 1);
+                SetActiveCharacterData(CurrEntStruct.God, 1);
                 return;
             }
-            SetActiveCharacterData(EntityStruct.God, 0);
+            SetActiveCharacterData(CurrEntStruct.God, 0);
         }
 
         private void cb_ignore_CheckedChanged(object sender, EventArgs e)
         {
             if (cb_ignore.Checked) 
             {
-                SetActiveCharacterData(EntityStruct.Undetectable, 1);
+                SetActiveCharacterData(CurrEntStruct.Undetectable, 1);
                 return;
             }
-            SetActiveCharacterData(EntityStruct.Undetectable, 0);
+            SetActiveCharacterData(CurrEntStruct.Undetectable, 0);
         }
 
         private void actCoordX_Click(object sender, EventArgs e)
@@ -499,12 +495,20 @@ namespace slurky
             SetActiveCharacterData(EntityStruct.InfJumps, 1, freeze: true, unfreeze: shouldfreeze);
         }
 
+        private void tbar_scale_ValueChanged(object sender, EventArgs e)
+        {
+            float val = (float)tbar_scale.Value / 10;
+            Console.WriteLine(val.ToString("f5"));
+            SetActiveCharacterData(offset: EntityStruct.TransformComponent, offset2: TransformComponent.Scale, setTo: val.ToString("f5"), vec3: true, writeType: "float");
+        }
+
         string GetBuildName()
         {
-            if (!GoodBase) return "-";
+            if (!GoodBase) return "-";      //  fallback
 
 
             if (m.ReadString((BaseAddress + 0x2C46D8).ToString("X")) == "0813.0032") return "Sly 2 NTSC";
+            else if (m.ReadString((BaseAddress + 0x2CBB08).ToString("X")) == "0914.1846") return "Sly 2 PAL";
             else if (m.ReadString((BaseAddress + 0x34A2F8).ToString("X")) == "0828.0212") return "Sly 3 NTSC";
 
 

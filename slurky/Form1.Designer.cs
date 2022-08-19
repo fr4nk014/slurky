@@ -35,8 +35,8 @@
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.trackBar1 = new System.Windows.Forms.TrackBar();
-            this.actScaleX = new System.Windows.Forms.Label();
+            this.tbar_scale = new System.Windows.Forms.TrackBar();
+            this.actScale = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.cb_infjmp = new System.Windows.Forms.CheckBox();
             this.cb_ignore = new System.Windows.Forms.CheckBox();
@@ -54,7 +54,7 @@
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.groupBox3.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tbar_scale)).BeginInit();
             this.groupBox2.SuspendLayout();
             this.actCharTab.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -117,8 +117,8 @@
             // 
             // groupBox3
             // 
-            this.groupBox3.Controls.Add(this.trackBar1);
-            this.groupBox3.Controls.Add(this.actScaleX);
+            this.groupBox3.Controls.Add(this.tbar_scale);
+            this.groupBox3.Controls.Add(this.actScale);
             this.groupBox3.Location = new System.Drawing.Point(6, 155);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(266, 71);
@@ -126,26 +126,28 @@
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Scale";
             // 
-            // trackBar1
+            // tbar_scale
             // 
-            this.trackBar1.Location = new System.Drawing.Point(81, 8);
-            this.trackBar1.Maximum = 50;
-            this.trackBar1.Minimum = 1;
-            this.trackBar1.Name = "trackBar1";
-            this.trackBar1.Size = new System.Drawing.Size(179, 45);
-            this.trackBar1.TabIndex = 4;
-            this.trackBar1.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
-            this.trackBar1.Value = 10;
+            this.tbar_scale.Location = new System.Drawing.Point(81, 8);
+            this.tbar_scale.Maximum = 50;
+            this.tbar_scale.Minimum = 5;
+            this.tbar_scale.Name = "tbar_scale";
+            this.tbar_scale.Size = new System.Drawing.Size(179, 45);
+            this.tbar_scale.SmallChange = 5;
+            this.tbar_scale.TabIndex = 4;
+            this.tbar_scale.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
+            this.tbar_scale.Value = 10;
+            this.tbar_scale.ValueChanged += new System.EventHandler(this.tbar_scale_ValueChanged);
             // 
-            // actScaleX
+            // actScale
             // 
-            this.actScaleX.AutoSize = true;
-            this.actScaleX.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.actScaleX.Location = new System.Drawing.Point(9, 18);
-            this.actScaleX.Name = "actScaleX";
-            this.actScaleX.Size = new System.Drawing.Size(66, 17);
-            this.actScaleX.TabIndex = 3;
-            this.actScaleX.Text = "0.00000";
+            this.actScale.AutoSize = true;
+            this.actScale.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.actScale.Location = new System.Drawing.Point(9, 18);
+            this.actScale.Name = "actScale";
+            this.actScale.Size = new System.Drawing.Size(66, 17);
+            this.actScale.TabIndex = 3;
+            this.actScale.Text = "0.00000";
             // 
             // groupBox2
             // 
@@ -317,7 +319,7 @@
             this.tabPage1.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tbar_scale)).EndInit();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.actCharTab.ResumeLayout(false);
@@ -351,8 +353,8 @@
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.CheckBox cb_infjmp;
         private System.Windows.Forms.GroupBox groupBox3;
-        private System.Windows.Forms.Label actScaleX;
-        private System.Windows.Forms.TrackBar trackBar1;
+        private System.Windows.Forms.Label actScale;
+        private System.Windows.Forms.TrackBar tbar_scale;
     }
 }
 
