@@ -34,6 +34,7 @@ namespace slurky
         {
             public static UInt64 Sly2NTSC = 0x2DE2F0;
             public static UInt64 Sly2PAL = 0x2E55A0;
+            public static UInt64 Sly2July11 = 0x2F9CF0;
         }
         UInt64 ActCharOffset = 0x0;
         public class EntityStruct
@@ -59,6 +60,7 @@ namespace slurky
 
                 if(build == "Sly 2 NTSC") ActCharOffset = ActCharOffsets.Sly2NTSC;
                 else if (build == "Sly 2 PAL") ActCharOffset = ActCharOffsets.Sly2PAL;
+                else if (build == "Sly 2 July 11") ActCharOffset = ActCharOffsets.Sly2July11;
             }
         }
 
@@ -210,10 +212,7 @@ namespace slurky
             UInt64 index = 1;
             Color colorToUse = Color.Gray;
 
-            if (CurrentBuild == "Sly 2 NTSC")
-            {
-                index = GetActiveCharacterData(CurrEntStruct.ID);
-            }
+            index = GetActiveCharacterData(CurrEntStruct.ID);
 
 
             switch (index)
@@ -509,6 +508,7 @@ namespace slurky
 
             if (m.ReadString((BaseAddress + 0x2C46D8).ToString("X")) == "0813.0032") return "Sly 2 NTSC";
             else if (m.ReadString((BaseAddress + 0x2CBB08).ToString("X")) == "0914.1846") return "Sly 2 PAL";
+            else if (m.ReadString((BaseAddress + 0x2C6470).ToString("X")) == "0711.1656") return "Sly 2 Prototype (July 11)";
             else if (m.ReadString((BaseAddress + 0x34A2F8).ToString("X")) == "0828.0212") return "Sly 3 NTSC";
 
 
