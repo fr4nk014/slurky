@@ -50,7 +50,7 @@ namespace slurky
 
         public void FillActChar(string build)
         {
-            if(build.StartsWith("Sly 2"))
+            if(build.StartsWith("Sly 2 NTSC") || build.StartsWith("Sly 2 PAL"))
             {
                 CurrEntStruct.ID = 0x18;
                 CurrEntStruct.God = 0x298;
