@@ -61,12 +61,12 @@ namespace slurky.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Icon slurk {
+        internal static System.Drawing.Bitmap slurk {
             get {
                 object obj = ResourceManager.GetObject("slurk", resourceCulture);
-                return ((System.Drawing.Icon)(obj));
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
     }
