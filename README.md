@@ -2,6 +2,7 @@
 
 ## Info
 Basic trainer that works with all current Sly 2 and 3 versions (NTSC + PAL + earlier builds).
+
 Designed to auto-adjust for new versions of PCSX2 too, in which the EE base address is completely unpredictable.
 
 <picture>
