@@ -53,7 +53,7 @@ namespace slurky
             public static UInt64 Sly2July11 = 0x2F9CF0;
 
             public static UInt64 Sly3NTSC = 0x479BB0;
-            public static UInt64 Sly3PAL;
+            public static UInt64 Sly3PAL = 0x47B230;
         }
 
         public static class CharacterNames
