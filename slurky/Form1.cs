@@ -68,6 +68,14 @@ namespace slurky
             public const string RCCar = "pene rc car";
             public const string Biplane = "sy biplane";
         }
+
+        public static class BuildNames
+        {
+            public const string Sly2NTSC = "Sly 2 NTSC";
+            public const string Sly2PAL = "Sly 2 PAL";
+            public const string Sly3NTSC = "Sly 3 NTSC";
+            public const string Sly3PAL = "Sly 3 PAL";
+        }
         
 
         UInt64 ActCharOffset = 0x0;
@@ -78,6 +86,7 @@ namespace slurky
             public static UInt64 Undetectable;
             public static UInt64 InfJumps;
             public static UInt64 TransformComponent;
+            public static UInt64 DetectionComponent;
         }
         
         public class CurrEntStruct : EntityStruct{}
@@ -133,7 +142,7 @@ namespace slurky
         }
         public void FillActChar(string build)
         {
-            if(build.StartsWith("Sly 2 NTSC") || build.StartsWith("Sly 2 PAL"))
+            if(build == BuildNames.Sly2NTSC || build == BuildNames.Sly2PAL)
             {
                 CurrEntStruct.ID = 0x18;
                 CurrEntStruct.God = 0x298;
@@ -141,7 +150,7 @@ namespace slurky
                 CurrEntStruct.InfJumps = 0x2E8;
                 CurrEntStruct.TransformComponent = 0x58;
 
-                if (build == "Sly 2 NTSC")
+                if (build == BuildNames.Sly2NTSC)
                 {
                     ActCharOffset = ActCharOffsets.Sly2NTSC;
                     GlobalAddresses.ActChar = 0x3D4A6C;
@@ -154,7 +163,7 @@ namespace slurky
                     GlobalAddresses.DrawDist = 0x2DDF5C;
                     GlobalAddresses.FOV = 0x2DDF60;
                 }
-                else if (build == "Sly 2 PAL")
+                else if (build == BuildNames.Sly2PAL)
                 {
                     ActCharOffset = ActCharOffsets.Sly2PAL; 
                     GlobalAddresses.ActChar = 0x3DC26C;
@@ -168,15 +177,22 @@ namespace slurky
                     GlobalAddresses.FOV = 0x2E5360;
                 }
             }
-            else if (build.StartsWith("Sly 3 NTSC") || build.StartsWith("Sly 3 PAL"))
+            else if (build == BuildNames.Sly3NTSC || build == BuildNames.Sly3PAL)
             {
                 CurrEntStruct.ID = 0x18;
                 CurrEntStruct.God = 0x180;
                 CurrEntStruct.Undetectable = 0x11AC;                // unassigned
                 CurrEntStruct.InfJumps = 0x2E8;                     // unassigned
                 CurrEntStruct.TransformComponent = 0x48;            // unassigned
+                CurrEntStruct.DetectionComponent = 0x1160;
 
-                if (build == "Sly 3 NTSC")
+                cb_infjmp.Invoke((MethodInvoker)delegate
+                {
+                    cb_infjmp.Enabled = false;
+                });
+                
+
+                if (build == BuildNames.Sly3NTSC)
                 {
                     ActCharOffset = ActCharOffsets.Sly3NTSC;
                     GlobalAddresses.ActChar = 0x36C710;
@@ -189,7 +205,7 @@ namespace slurky
                     GlobalAddresses.DrawDist = 0x2DDF5C;            // unassigned
                     GlobalAddresses.FOV = 0x2DDF60;                 // unassigned
                 }
-                else if (build == "Sly 3 PAL")
+                else if (build == BuildNames.Sly3PAL)
                 {
                     ActCharOffset = ActCharOffsets.Sly3PAL;
                     GlobalAddresses.ActChar = 0x3DC26C;             // unassigned
@@ -211,6 +227,10 @@ namespace slurky
             public static UInt64 Position = 0x30;
             public static UInt64 Freeze = 0x94;
             public static UInt64 Warp0 = 0x98;
+        }
+        public class DetectionComponent
+        {
+            public static UInt64 DisableGuardAttacks = 0x1C;
         }
 
         public SlurkyTrainer()
@@ -435,6 +455,22 @@ namespace slurky
                 });
             }
 
+            UInt64 disguardatt = GetActiveCharacterInt(CurrEntStruct.DetectionComponent, DetectionComponent.DisableGuardAttacks);
+            if (disguardatt == 1)
+            {
+                cb_atttarg.Invoke((MethodInvoker)delegate
+                {
+                    cb_atttarg.Checked = true;
+                });
+            }
+            else if (disguardatt == 0)
+            {
+                cb_atttarg.Invoke((MethodInvoker)delegate
+                {
+                    cb_atttarg.Checked = false;
+                });
+            }
+
             UInt64 help = 0x0;
             float tempX = 0, tempY = 0, tempZ = 0;
             while (true)
@@ -647,6 +683,17 @@ namespace slurky
             SetActiveCharacterData(CurrEntStruct.Undetectable, 0);
         }
 
+        private void cb_atttarg_CheckedChanged(object sender, EventArgs e)
+        {
+            if (cb_atttarg.Checked)
+            {
+                SetActiveCharacterData(offset: CurrEntStruct.DetectionComponent, offset2: DetectionComponent.DisableGuardAttacks, setTo: "1");
+                return;
+            }
+            SetActiveCharacterData(offset: CurrEntStruct.DetectionComponent, offset2: DetectionComponent.DisableGuardAttacks, setTo: "0");
+        }
+
+
         private void cb_infjmp_CheckedChanged(object sender, EventArgs e)//broken!!!
         {
             bool shouldfreeze = cb_infjmp.Checked;
@@ -685,13 +732,26 @@ namespace slurky
             SetGlobalValue(GlobalAddresses.ResetCamera, "int", "1");    //  reset cam when warpin
         }
 
+        private void cb_character_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string sel = cb_character.Text;
+            string b = GetBuildName();
+            if (sel == "Active Character")
+            {
+                if(b == BuildNames.Sly2NTSC)
+                {
+
+                }
+            }
+        }
+
         string GetBuildName()
         {
             if (!GoodBase) return "-";      //  fallback
 
             
-            if (m.ReadString((BaseAddress + 0x2C46D8).ToString("X")) == "0813.0032") return "Sly 2 NTSC";
-            else if (m.ReadString((BaseAddress + 0x2CBB08).ToString("X")) == "0914.1846") return "Sly 2 PAL";
+            if (m.ReadString((BaseAddress + 0x2C46D8).ToString("X")) == "0813.0032") return BuildNames.Sly2NTSC;
+            else if (m.ReadString((BaseAddress + 0x2CBB08).ToString("X")) == "0914.1846") return BuildNames.Sly2PAL;
             else if (m.ReadString((BaseAddress + 0x2C6470).ToString("X")) == "0711.1656") return "Sly 2 Prototype (July 11)";
             else if (m.ReadString((BaseAddress + 0x34A2F8).ToString("X")) == "0828.0212") return "Sly 3 NTSC";
 

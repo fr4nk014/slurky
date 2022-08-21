@@ -28,20 +28,21 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SlurkyTrainer));
             this.bgworker = new System.ComponentModel.BackgroundWorker();
             this.labelTitle = new System.Windows.Forms.Label();
             this.processStatuslabel = new System.Windows.Forms.Label();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.tbar_scale = new System.Windows.Forms.TrackBar();
-            this.actScale = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.cb_infjmp = new System.Windows.Forms.CheckBox();
             this.cb_ignore = new System.Windows.Forms.CheckBox();
             this.cb_god = new System.Windows.Forms.CheckBox();
             this.actCharTab = new System.Windows.Forms.GroupBox();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.tbar_scale = new System.Windows.Forms.TrackBar();
+            this.actScale = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.btn_0act = new System.Windows.Forms.Button();
             this.btn_freezeAct = new System.Windows.Forms.Button();
@@ -53,43 +54,46 @@
             this.label1 = new System.Windows.Forms.Label();
             this.actEntName = new System.Windows.Forms.Label();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.btn_warp = new System.Windows.Forms.Button();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.btn_reload = new System.Windows.Forms.Button();
+            this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.trackBar2 = new System.Windows.Forms.TrackBar();
+            this.label8 = new System.Windows.Forms.Label();
+            this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.button2 = new System.Windows.Forms.Button();
+            this.trackBar1 = new System.Windows.Forms.TrackBar();
+            this.label7 = new System.Windows.Forms.Label();
+            this.tbar_rendDist = new System.Windows.Forms.TrackBar();
+            this.label6 = new System.Windows.Forms.Label();
+            this.tbar_camspeed = new System.Windows.Forms.TrackBar();
+            this.label5 = new System.Windows.Forms.Label();
+            this.button1 = new System.Windows.Forms.Button();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.label_base = new System.Windows.Forms.Label();
-            this.groupBox4 = new System.Windows.Forms.GroupBox();
-            this.btn_reload = new System.Windows.Forms.Button();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
-            this.btn_warp = new System.Windows.Forms.Button();
-            this.label4 = new System.Windows.Forms.Label();
-            this.tabPage3 = new System.Windows.Forms.TabPage();
-            this.groupBox5 = new System.Windows.Forms.GroupBox();
-            this.button1 = new System.Windows.Forms.Button();
-            this.label5 = new System.Windows.Forms.Label();
-            this.tbar_camspeed = new System.Windows.Forms.TrackBar();
-            this.label6 = new System.Windows.Forms.Label();
-            this.tbar_rendDist = new System.Windows.Forms.TrackBar();
-            this.label7 = new System.Windows.Forms.Label();
-            this.trackBar1 = new System.Windows.Forms.TrackBar();
-            this.button2 = new System.Windows.Forms.Button();
-            this.groupBox6 = new System.Windows.Forms.GroupBox();
-            this.label8 = new System.Windows.Forms.Label();
-            this.trackBar2 = new System.Windows.Forms.TrackBar();
+            this.cb_atttarg = new System.Windows.Forms.CheckBox();
+            this.toolTips = new System.Windows.Forms.ToolTip(this.components);
+            this.cb_character = new System.Windows.Forms.ComboBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
-            this.groupBox3.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.tbar_scale)).BeginInit();
             this.groupBox2.SuspendLayout();
             this.actCharTab.SuspendLayout();
+            this.groupBox3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.tbar_scale)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.tabPage2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.groupBox4.SuspendLayout();
             this.tabPage3.SuspendLayout();
-            this.groupBox5.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.tbar_camspeed)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.tbar_rendDist)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
             this.groupBox6.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).BeginInit();
+            this.groupBox5.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tbar_rendDist)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tbar_camspeed)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // bgworker
@@ -141,6 +145,7 @@
             this.tabPage1.BackColor = System.Drawing.SystemColors.Control;
             this.tabPage1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.tabPage1.Controls.Add(this.groupBox2);
+            this.tabPage1.Controls.Add(this.groupBox1);
             this.tabPage1.Controls.Add(this.actCharTab);
             this.tabPage1.Cursor = System.Windows.Forms.Cursors.Default;
             this.tabPage1.Location = new System.Drawing.Point(4, 29);
@@ -148,13 +153,79 @@
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage1.Size = new System.Drawing.Size(599, 351);
             this.tabPage1.TabIndex = 12;
-            this.tabPage1.Text = "Active Character";
+            this.tabPage1.Text = "Character";
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.BackColor = System.Drawing.SystemColors.Control;
+            this.groupBox2.Controls.Add(this.cb_atttarg);
+            this.groupBox2.Controls.Add(this.cb_infjmp);
+            this.groupBox2.Controls.Add(this.cb_ignore);
+            this.groupBox2.Controls.Add(this.cb_god);
+            this.groupBox2.Location = new System.Drawing.Point(284, 6);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(307, 172);
+            this.groupBox2.TabIndex = 3;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Flags";
+            // 
+            // cb_infjmp
+            // 
+            this.cb_infjmp.AutoSize = true;
+            this.cb_infjmp.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.cb_infjmp.Location = new System.Drawing.Point(6, 57);
+            this.cb_infjmp.Name = "cb_infjmp";
+            this.cb_infjmp.Size = new System.Drawing.Size(118, 21);
+            this.cb_infjmp.TabIndex = 3;
+            this.cb_infjmp.Text = "Jump override";
+            this.toolTips.SetToolTip(this.cb_infjmp, "Override current jump state. Infinite jumps.");
+            this.cb_infjmp.UseVisualStyleBackColor = true;
+            this.cb_infjmp.CheckedChanged += new System.EventHandler(this.cb_infjmp_CheckedChanged);
+            // 
+            // cb_ignore
+            // 
+            this.cb_ignore.AutoSize = true;
+            this.cb_ignore.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.cb_ignore.Location = new System.Drawing.Point(6, 21);
+            this.cb_ignore.Name = "cb_ignore";
+            this.cb_ignore.Size = new System.Drawing.Size(113, 21);
+            this.cb_ignore.TabIndex = 2;
+            this.cb_ignore.Text = "Undetectable";
+            this.toolTips.SetToolTip(this.cb_ignore, "Make guards ignore you.");
+            this.cb_ignore.UseVisualStyleBackColor = true;
+            this.cb_ignore.CheckedChanged += new System.EventHandler(this.cb_ignore_CheckedChanged);
+            // 
+            // cb_god
+            // 
+            this.cb_god.AutoSize = true;
+            this.cb_god.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.cb_god.Location = new System.Drawing.Point(6, 39);
+            this.cb_god.Name = "cb_god";
+            this.cb_god.Size = new System.Drawing.Size(118, 21);
+            this.cb_god.TabIndex = 1;
+            this.cb_god.Text = "Invulnerability";
+            this.toolTips.SetToolTip(this.cb_god, "No damage or damage animation.");
+            this.cb_god.UseVisualStyleBackColor = true;
+            this.cb_god.CheckedChanged += new System.EventHandler(this.cb_god_CheckedChanged);
+            // 
+            // actCharTab
+            // 
+            this.actCharTab.BackColor = System.Drawing.SystemColors.Control;
+            this.actCharTab.Controls.Add(this.cb_character);
+            this.actCharTab.Controls.Add(this.groupBox3);
+            this.actCharTab.Controls.Add(this.actEntName);
+            this.actCharTab.Location = new System.Drawing.Point(6, 6);
+            this.actCharTab.Name = "actCharTab";
+            this.actCharTab.Size = new System.Drawing.Size(272, 335);
+            this.actCharTab.TabIndex = 0;
+            this.actCharTab.TabStop = false;
+            this.actCharTab.Text = "Info";
             // 
             // groupBox3
             // 
             this.groupBox3.Controls.Add(this.tbar_scale);
             this.groupBox3.Controls.Add(this.actScale);
-            this.groupBox3.Location = new System.Drawing.Point(0, 149);
+            this.groupBox3.Location = new System.Drawing.Point(0, 169);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(266, 71);
             this.groupBox3.TabIndex = 6;
@@ -184,68 +255,6 @@
             this.actScale.TabIndex = 3;
             this.actScale.Text = "0.00000";
             // 
-            // groupBox2
-            // 
-            this.groupBox2.BackColor = System.Drawing.SystemColors.Control;
-            this.groupBox2.Controls.Add(this.cb_infjmp);
-            this.groupBox2.Controls.Add(this.cb_ignore);
-            this.groupBox2.Controls.Add(this.cb_god);
-            this.groupBox2.Location = new System.Drawing.Point(284, 6);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(307, 143);
-            this.groupBox2.TabIndex = 3;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Flags";
-            // 
-            // cb_infjmp
-            // 
-            this.cb_infjmp.AutoSize = true;
-            this.cb_infjmp.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.cb_infjmp.Location = new System.Drawing.Point(6, 57);
-            this.cb_infjmp.Name = "cb_infjmp";
-            this.cb_infjmp.Size = new System.Drawing.Size(118, 21);
-            this.cb_infjmp.TabIndex = 3;
-            this.cb_infjmp.Text = "Jump override";
-            this.cb_infjmp.UseVisualStyleBackColor = true;
-            this.cb_infjmp.CheckedChanged += new System.EventHandler(this.cb_infjmp_CheckedChanged);
-            // 
-            // cb_ignore
-            // 
-            this.cb_ignore.AutoSize = true;
-            this.cb_ignore.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.cb_ignore.Location = new System.Drawing.Point(6, 21);
-            this.cb_ignore.Name = "cb_ignore";
-            this.cb_ignore.Size = new System.Drawing.Size(113, 21);
-            this.cb_ignore.TabIndex = 2;
-            this.cb_ignore.Text = "Undetectable";
-            this.cb_ignore.UseVisualStyleBackColor = true;
-            this.cb_ignore.CheckedChanged += new System.EventHandler(this.cb_ignore_CheckedChanged);
-            // 
-            // cb_god
-            // 
-            this.cb_god.AutoSize = true;
-            this.cb_god.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.cb_god.Location = new System.Drawing.Point(6, 39);
-            this.cb_god.Name = "cb_god";
-            this.cb_god.Size = new System.Drawing.Size(118, 21);
-            this.cb_god.TabIndex = 1;
-            this.cb_god.Text = "Invulnerability";
-            this.cb_god.UseVisualStyleBackColor = true;
-            this.cb_god.CheckedChanged += new System.EventHandler(this.cb_god_CheckedChanged);
-            // 
-            // actCharTab
-            // 
-            this.actCharTab.BackColor = System.Drawing.SystemColors.Control;
-            this.actCharTab.Controls.Add(this.groupBox3);
-            this.actCharTab.Controls.Add(this.groupBox1);
-            this.actCharTab.Controls.Add(this.actEntName);
-            this.actCharTab.Location = new System.Drawing.Point(6, 6);
-            this.actCharTab.Name = "actCharTab";
-            this.actCharTab.Size = new System.Drawing.Size(272, 335);
-            this.actCharTab.TabIndex = 0;
-            this.actCharTab.TabStop = false;
-            this.actCharTab.Text = "Info";
-            // 
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.btn_0act);
@@ -256,7 +265,7 @@
             this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.label1);
-            this.groupBox1.Location = new System.Drawing.Point(0, 39);
+            this.groupBox1.Location = new System.Drawing.Point(6, 73);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(266, 104);
             this.groupBox1.TabIndex = 1;
@@ -271,7 +280,8 @@
             this.btn_0act.Name = "btn_0act";
             this.btn_0act.Size = new System.Drawing.Size(158, 23);
             this.btn_0act.TabIndex = 7;
-            this.btn_0act.Text = "Go to 0,0,0";
+            this.btn_0act.Text = "Go to 0,0,0.";
+            this.toolTips.SetToolTip(this.btn_0act, "Teleport to 0,0,0");
             this.btn_0act.UseVisualStyleBackColor = true;
             this.btn_0act.Click += new System.EventHandler(this.btn_0act_Click);
             // 
@@ -284,6 +294,7 @@
             this.btn_freezeAct.Size = new System.Drawing.Size(87, 23);
             this.btn_freezeAct.TabIndex = 6;
             this.btn_freezeAct.Text = "Freeze";
+            this.toolTips.SetToolTip(this.btn_freezeAct, "Freeze current position.");
             this.btn_freezeAct.UseVisualStyleBackColor = true;
             this.btn_freezeAct.Click += new System.EventHandler(this.btn_freezeAct_Click);
             // 
@@ -367,6 +378,210 @@
             this.tabPage2.TabIndex = 13;
             this.tabPage2.Text = "Map";
             // 
+            // groupBox4
+            // 
+            this.groupBox4.BackColor = System.Drawing.SystemColors.Control;
+            this.groupBox4.Controls.Add(this.label4);
+            this.groupBox4.Controls.Add(this.btn_warp);
+            this.groupBox4.Controls.Add(this.comboBox1);
+            this.groupBox4.Controls.Add(this.btn_reload);
+            this.groupBox4.Location = new System.Drawing.Point(6, 6);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Size = new System.Drawing.Size(210, 335);
+            this.groupBox4.TabIndex = 0;
+            this.groupBox4.TabStop = false;
+            this.groupBox4.Text = "Current";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(6, 18);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(125, 17);
+            this.label4.TabIndex = 4;
+            this.label4.Text = "Set Warp Location";
+            // 
+            // btn_warp
+            // 
+            this.btn_warp.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btn_warp.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.btn_warp.Location = new System.Drawing.Point(6, 69);
+            this.btn_warp.Name = "btn_warp";
+            this.btn_warp.Size = new System.Drawing.Size(195, 23);
+            this.btn_warp.TabIndex = 3;
+            this.btn_warp.Text = "Warp";
+            this.toolTips.SetToolTip(this.btn_warp, "Warp to selected warp location.");
+            this.btn_warp.UseVisualStyleBackColor = true;
+            this.btn_warp.Click += new System.EventHandler(this.btn_warp_Click);
+            // 
+            // comboBox1
+            // 
+            this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox1.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Location = new System.Drawing.Point(6, 38);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(195, 25);
+            this.comboBox1.TabIndex = 2;
+            // 
+            // btn_reload
+            // 
+            this.btn_reload.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btn_reload.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.btn_reload.Location = new System.Drawing.Point(6, 98);
+            this.btn_reload.Name = "btn_reload";
+            this.btn_reload.Size = new System.Drawing.Size(195, 23);
+            this.btn_reload.TabIndex = 1;
+            this.btn_reload.Text = "Reload";
+            this.toolTips.SetToolTip(this.btn_reload, "Reload current level.");
+            this.btn_reload.UseVisualStyleBackColor = true;
+            this.btn_reload.Click += new System.EventHandler(this.btn_reload_Click);
+            // 
+            // tabPage3
+            // 
+            this.tabPage3.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.tabPage3.Controls.Add(this.groupBox6);
+            this.tabPage3.Controls.Add(this.groupBox5);
+            this.tabPage3.Location = new System.Drawing.Point(4, 29);
+            this.tabPage3.Name = "tabPage3";
+            this.tabPage3.Size = new System.Drawing.Size(599, 351);
+            this.tabPage3.TabIndex = 14;
+            this.tabPage3.Text = "Engine";
+            this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // groupBox6
+            // 
+            this.groupBox6.Controls.Add(this.trackBar2);
+            this.groupBox6.Controls.Add(this.label8);
+            this.groupBox6.Dock = System.Windows.Forms.DockStyle.Right;
+            this.groupBox6.Location = new System.Drawing.Point(399, 0);
+            this.groupBox6.Name = "groupBox6";
+            this.groupBox6.Size = new System.Drawing.Size(196, 347);
+            this.groupBox6.TabIndex = 1;
+            this.groupBox6.TabStop = false;
+            this.groupBox6.Text = "Other";
+            // 
+            // trackBar2
+            // 
+            this.trackBar2.Location = new System.Drawing.Point(9, 43);
+            this.trackBar2.Maximum = 50;
+            this.trackBar2.Name = "trackBar2";
+            this.trackBar2.Size = new System.Drawing.Size(181, 45);
+            this.trackBar2.TabIndex = 8;
+            this.trackBar2.TickStyle = System.Windows.Forms.TickStyle.Both;
+            this.trackBar2.Value = 10;
+            // 
+            // label8
+            // 
+            this.label8.Location = new System.Drawing.Point(6, 18);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(184, 22);
+            this.label8.TabIndex = 8;
+            this.label8.Text = "Clock Speed";
+            this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // groupBox5
+            // 
+            this.groupBox5.Controls.Add(this.button2);
+            this.groupBox5.Controls.Add(this.trackBar1);
+            this.groupBox5.Controls.Add(this.label7);
+            this.groupBox5.Controls.Add(this.tbar_rendDist);
+            this.groupBox5.Controls.Add(this.label6);
+            this.groupBox5.Controls.Add(this.tbar_camspeed);
+            this.groupBox5.Controls.Add(this.label5);
+            this.groupBox5.Controls.Add(this.button1);
+            this.groupBox5.Dock = System.Windows.Forms.DockStyle.Left;
+            this.groupBox5.Location = new System.Drawing.Point(0, 0);
+            this.groupBox5.Name = "groupBox5";
+            this.groupBox5.Size = new System.Drawing.Size(196, 347);
+            this.groupBox5.TabIndex = 0;
+            this.groupBox5.TabStop = false;
+            this.groupBox5.Text = "Camera";
+            // 
+            // button2
+            // 
+            this.button2.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.button2.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.button2.Location = new System.Drawing.Point(6, 307);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(184, 28);
+            this.button2.TabIndex = 7;
+            this.button2.Text = "Reset Camera Settings";
+            this.toolTips.SetToolTip(this.button2, "Reset all camera settings.");
+            this.button2.UseVisualStyleBackColor = true;
+            // 
+            // trackBar1
+            // 
+            this.trackBar1.Location = new System.Drawing.Point(6, 218);
+            this.trackBar1.Maximum = 50;
+            this.trackBar1.Minimum = 5;
+            this.trackBar1.Name = "trackBar1";
+            this.trackBar1.Size = new System.Drawing.Size(184, 45);
+            this.trackBar1.TabIndex = 6;
+            this.trackBar1.TickStyle = System.Windows.Forms.TickStyle.Both;
+            this.trackBar1.Value = 11;
+            // 
+            // label7
+            // 
+            this.label7.Location = new System.Drawing.Point(3, 193);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(187, 22);
+            this.label7.TabIndex = 5;
+            this.label7.Text = "Field of View";
+            this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // tbar_rendDist
+            // 
+            this.tbar_rendDist.Location = new System.Drawing.Point(6, 145);
+            this.tbar_rendDist.Maximum = 50;
+            this.tbar_rendDist.Minimum = 5;
+            this.tbar_rendDist.Name = "tbar_rendDist";
+            this.tbar_rendDist.Size = new System.Drawing.Size(184, 45);
+            this.tbar_rendDist.TabIndex = 4;
+            this.tbar_rendDist.TickStyle = System.Windows.Forms.TickStyle.Both;
+            this.tbar_rendDist.Value = 11;
+            // 
+            // label6
+            // 
+            this.label6.Location = new System.Drawing.Point(3, 120);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(187, 22);
+            this.label6.TabIndex = 3;
+            this.label6.Text = "Render Distance";
+            this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // tbar_camspeed
+            // 
+            this.tbar_camspeed.Location = new System.Drawing.Point(6, 72);
+            this.tbar_camspeed.Maximum = 50;
+            this.tbar_camspeed.Minimum = 5;
+            this.tbar_camspeed.Name = "tbar_camspeed";
+            this.tbar_camspeed.Size = new System.Drawing.Size(184, 45);
+            this.tbar_camspeed.TabIndex = 2;
+            this.tbar_camspeed.TickStyle = System.Windows.Forms.TickStyle.Both;
+            this.tbar_camspeed.Value = 10;
+            // 
+            // label5
+            // 
+            this.label5.Location = new System.Drawing.Point(6, 47);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(184, 22);
+            this.label5.TabIndex = 1;
+            this.label5.Text = "Camera Speed";
+            this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // button1
+            // 
+            this.button1.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.button1.Location = new System.Drawing.Point(6, 21);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(184, 23);
+            this.button1.TabIndex = 0;
+            this.button1.Text = "Reset Orbit";
+            this.toolTips.SetToolTip(this.button1, "Resets the camera behind active character.");
+            this.button1.UseVisualStyleBackColor = true;
+            // 
             // pictureBox1
             // 
             this.pictureBox1.BackColor = System.Drawing.SystemColors.Control;
@@ -392,205 +607,42 @@
             this.label_base.Text = "emu base = not found";
             this.label_base.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // groupBox4
+            // cb_atttarg
             // 
-            this.groupBox4.BackColor = System.Drawing.SystemColors.Control;
-            this.groupBox4.Controls.Add(this.label4);
-            this.groupBox4.Controls.Add(this.btn_warp);
-            this.groupBox4.Controls.Add(this.comboBox1);
-            this.groupBox4.Controls.Add(this.btn_reload);
-            this.groupBox4.Location = new System.Drawing.Point(6, 6);
-            this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(210, 335);
-            this.groupBox4.TabIndex = 0;
-            this.groupBox4.TabStop = false;
-            this.groupBox4.Text = "Current";
+            this.cb_atttarg.AutoSize = true;
+            this.cb_atttarg.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.cb_atttarg.Location = new System.Drawing.Point(6, 74);
+            this.cb_atttarg.Name = "cb_atttarg";
+            this.cb_atttarg.Size = new System.Drawing.Size(169, 21);
+            this.cb_atttarg.TabIndex = 4;
+            this.cb_atttarg.Text = "Disable guard attacks";
+            this.toolTips.SetToolTip(this.cb_atttarg, "Guards won\'t attack you.");
+            this.cb_atttarg.UseVisualStyleBackColor = true;
+            this.cb_atttarg.CheckedChanged += new System.EventHandler(this.cb_atttarg_CheckedChanged);
             // 
-            // btn_reload
+            // toolTips
             // 
-            this.btn_reload.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btn_reload.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btn_reload.Location = new System.Drawing.Point(6, 98);
-            this.btn_reload.Name = "btn_reload";
-            this.btn_reload.Size = new System.Drawing.Size(195, 23);
-            this.btn_reload.TabIndex = 1;
-            this.btn_reload.Text = "Reload";
-            this.btn_reload.UseVisualStyleBackColor = true;
-            this.btn_reload.Click += new System.EventHandler(this.btn_reload_Click);
+            this.toolTips.AutomaticDelay = 100;
+            this.toolTips.AutoPopDelay = 0;
+            this.toolTips.InitialDelay = 100;
+            this.toolTips.ReshowDelay = 20;
+            this.toolTips.UseFading = false;
             // 
-            // comboBox1
+            // cb_character
             // 
-            this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBox1.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(6, 38);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(195, 25);
-            this.comboBox1.TabIndex = 2;
-            // 
-            // btn_warp
-            // 
-            this.btn_warp.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btn_warp.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btn_warp.Location = new System.Drawing.Point(6, 69);
-            this.btn_warp.Name = "btn_warp";
-            this.btn_warp.Size = new System.Drawing.Size(195, 23);
-            this.btn_warp.TabIndex = 3;
-            this.btn_warp.Text = "Warp";
-            this.btn_warp.UseVisualStyleBackColor = true;
-            this.btn_warp.Click += new System.EventHandler(this.btn_warp_Click);
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(6, 18);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(125, 17);
-            this.label4.TabIndex = 4;
-            this.label4.Text = "Set Warp Location";
-            // 
-            // tabPage3
-            // 
-            this.tabPage3.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.tabPage3.Controls.Add(this.groupBox6);
-            this.tabPage3.Controls.Add(this.groupBox5);
-            this.tabPage3.Location = new System.Drawing.Point(4, 29);
-            this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Size = new System.Drawing.Size(599, 351);
-            this.tabPage3.TabIndex = 14;
-            this.tabPage3.Text = "Engine";
-            this.tabPage3.UseVisualStyleBackColor = true;
-            // 
-            // groupBox5
-            // 
-            this.groupBox5.Controls.Add(this.button2);
-            this.groupBox5.Controls.Add(this.trackBar1);
-            this.groupBox5.Controls.Add(this.label7);
-            this.groupBox5.Controls.Add(this.tbar_rendDist);
-            this.groupBox5.Controls.Add(this.label6);
-            this.groupBox5.Controls.Add(this.tbar_camspeed);
-            this.groupBox5.Controls.Add(this.label5);
-            this.groupBox5.Controls.Add(this.button1);
-            this.groupBox5.Dock = System.Windows.Forms.DockStyle.Left;
-            this.groupBox5.Location = new System.Drawing.Point(0, 0);
-            this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(196, 347);
-            this.groupBox5.TabIndex = 0;
-            this.groupBox5.TabStop = false;
-            this.groupBox5.Text = "Camera";
-            // 
-            // button1
-            // 
-            this.button1.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.button1.Location = new System.Drawing.Point(6, 21);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(184, 23);
-            this.button1.TabIndex = 0;
-            this.button1.Text = "Reset Orbit";
-            this.button1.UseVisualStyleBackColor = true;
-            // 
-            // label5
-            // 
-            this.label5.Location = new System.Drawing.Point(6, 47);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(184, 22);
-            this.label5.TabIndex = 1;
-            this.label5.Text = "Camera Speed";
-            this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // tbar_camspeed
-            // 
-            this.tbar_camspeed.Location = new System.Drawing.Point(6, 72);
-            this.tbar_camspeed.Maximum = 50;
-            this.tbar_camspeed.Minimum = 5;
-            this.tbar_camspeed.Name = "tbar_camspeed";
-            this.tbar_camspeed.Size = new System.Drawing.Size(184, 45);
-            this.tbar_camspeed.TabIndex = 2;
-            this.tbar_camspeed.TickStyle = System.Windows.Forms.TickStyle.Both;
-            this.tbar_camspeed.Value = 10;
-            // 
-            // label6
-            // 
-            this.label6.Location = new System.Drawing.Point(3, 120);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(187, 22);
-            this.label6.TabIndex = 3;
-            this.label6.Text = "Render Distance";
-            this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // tbar_rendDist
-            // 
-            this.tbar_rendDist.Location = new System.Drawing.Point(6, 145);
-            this.tbar_rendDist.Maximum = 50;
-            this.tbar_rendDist.Minimum = 5;
-            this.tbar_rendDist.Name = "tbar_rendDist";
-            this.tbar_rendDist.Size = new System.Drawing.Size(184, 45);
-            this.tbar_rendDist.TabIndex = 4;
-            this.tbar_rendDist.TickStyle = System.Windows.Forms.TickStyle.Both;
-            this.tbar_rendDist.Value = 11;
-            // 
-            // label7
-            // 
-            this.label7.Location = new System.Drawing.Point(3, 193);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(187, 22);
-            this.label7.TabIndex = 5;
-            this.label7.Text = "Field of View";
-            this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // trackBar1
-            // 
-            this.trackBar1.Location = new System.Drawing.Point(6, 218);
-            this.trackBar1.Maximum = 50;
-            this.trackBar1.Minimum = 5;
-            this.trackBar1.Name = "trackBar1";
-            this.trackBar1.Size = new System.Drawing.Size(184, 45);
-            this.trackBar1.TabIndex = 6;
-            this.trackBar1.TickStyle = System.Windows.Forms.TickStyle.Both;
-            this.trackBar1.Value = 11;
-            // 
-            // button2
-            // 
-            this.button2.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.button2.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.button2.Location = new System.Drawing.Point(6, 307);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(184, 28);
-            this.button2.TabIndex = 7;
-            this.button2.Text = "Reset Camera Settings";
-            this.button2.UseVisualStyleBackColor = true;
-            // 
-            // groupBox6
-            // 
-            this.groupBox6.Controls.Add(this.trackBar2);
-            this.groupBox6.Controls.Add(this.label8);
-            this.groupBox6.Dock = System.Windows.Forms.DockStyle.Right;
-            this.groupBox6.Location = new System.Drawing.Point(399, 0);
-            this.groupBox6.Name = "groupBox6";
-            this.groupBox6.Size = new System.Drawing.Size(196, 347);
-            this.groupBox6.TabIndex = 1;
-            this.groupBox6.TabStop = false;
-            this.groupBox6.Text = "Other";
-            // 
-            // label8
-            // 
-            this.label8.Location = new System.Drawing.Point(6, 18);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(184, 22);
-            this.label8.TabIndex = 8;
-            this.label8.Text = "Clock Speed";
-            this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // trackBar2
-            // 
-            this.trackBar2.Location = new System.Drawing.Point(9, 43);
-            this.trackBar2.Maximum = 50;
-            this.trackBar2.Name = "trackBar2";
-            this.trackBar2.Size = new System.Drawing.Size(181, 45);
-            this.trackBar2.TabIndex = 8;
-            this.trackBar2.TickStyle = System.Windows.Forms.TickStyle.Both;
-            this.trackBar2.Value = 10;
+            this.cb_character.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cb_character.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.cb_character.FormattingEnabled = true;
+            this.cb_character.Items.AddRange(new object[] {
+            "Active Character",
+            "Sly",
+            "Bentley",
+            "Murray"});
+            this.cb_character.Location = new System.Drawing.Point(0, 39);
+            this.cb_character.Name = "cb_character";
+            this.cb_character.Size = new System.Drawing.Size(266, 25);
+            this.cb_character.TabIndex = 7;
+            this.cb_character.SelectedIndexChanged += new System.EventHandler(this.cb_character_SelectedIndexChanged);
             // 
             // SlurkyTrainer
             // 
@@ -612,28 +664,28 @@
             this.Load += new System.EventHandler(this.SlurkyTrainer_Load);
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
-            this.groupBox3.ResumeLayout(false);
-            this.groupBox3.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.tbar_scale)).EndInit();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.actCharTab.ResumeLayout(false);
             this.actCharTab.PerformLayout();
+            this.groupBox3.ResumeLayout(false);
+            this.groupBox3.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.tbar_scale)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.tabPage2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
             this.tabPage3.ResumeLayout(false);
-            this.groupBox5.ResumeLayout(false);
-            this.groupBox5.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.tbar_camspeed)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.tbar_rendDist)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
             this.groupBox6.ResumeLayout(false);
             this.groupBox6.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).EndInit();
+            this.groupBox5.ResumeLayout(false);
+            this.groupBox5.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tbar_rendDist)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tbar_camspeed)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -685,6 +737,9 @@
         private System.Windows.Forms.GroupBox groupBox6;
         private System.Windows.Forms.TrackBar trackBar2;
         private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.CheckBox cb_atttarg;
+        private System.Windows.Forms.ToolTip toolTips;
+        private System.Windows.Forms.ComboBox cb_character;
     }
 }
 
