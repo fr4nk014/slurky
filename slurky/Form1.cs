@@ -9,6 +9,8 @@ using System.IO;
 using System.Reflection;
 using System.Threading;
 using System.Windows.Forms;
+using System.Text;
+using System.Runtime;
 
 namespace slurky
 {
@@ -23,20 +25,31 @@ namespace slurky
         string BaseString;
         int bgProcessID;
 
+        bool CanFillWarps = true;
+
         string CurrentBuild;
 
         List<UInt64> FrozenAddresses;
+        List<string> LevelAOBList;
+        List<byte[]> LevelAOBs;
+        public UInt64 LevelAmt;
 
+        public float CoordAdjustAmt = 200f;
 
         public static byte?[] CheckBytesEE { get; private set; } = new byte?[]
         { 0x01, 0x80, 0x1A, 0x3C, null, null, 0x59, 0xFF, 0x00, 0x68, 0x19, 0x40,
         0x01, 0x80, 0x1A, 0x3C, 0x7C, 0x00, 0x39, 0x33, 0x21, 0xD0, 0x59, 0x03, null,
         null, null, 0x8F, 0x01, 0x80, 0x19, 0x3C, 0x08, 0x00, 0x40, 0x03, null, null, 0x39, 0xDF };
 
+
+        public static UInt64 LevelAOBStart;
+        
         public class GlobalAddresses
         {
             public static UInt64 ActChar;
             public static UInt64 Reload;
+            public static UInt64 CurrentLevelAOB;
+            public static UInt64 CurrentLvlEntrance;
             public static UInt64 ResetCamera;
             public static UInt64 LevelID;
 
@@ -45,40 +58,56 @@ namespace slurky
             public static UInt64 DrawDist;
             public static UInt64 FOV;
             public static UInt64 Clock;
+            public static UInt64 Loading;
+
+            public static UInt64 UnlockGadgets, UnlockGadgets2;
+
+
+
+            
         }
-        public class ActCharOffsets
+        public class ActCharPtrs
         {
             public static UInt64 Sly2NTSC = 0x2DE2F0;
             public static UInt64 Sly2PAL = 0x2E55A0;
             public static UInt64 Sly2July11 = 0x2F9CF0;
 
-            public static UInt64 Sly3NTSC = 0x479BB0;
-            public static UInt64 Sly3PAL = 0x47B230;
+            public static UInt64 Sly3NTSC = 0x36F84C;
+            public static UInt64 Sly3PAL = 0x3702CC;
+        }
+
+        public class CharStructPtrs
+        {
+            public static UInt64 Sly;
+            public static UInt64 Bentley;
+            public static UInt64 Murray;
         }
 
         public static class CharacterNames
         {
-            public const string Sly = "sy";
-            public const string Bentley = "benlo";
-            public const string Murray = "murphy";
-            public const string Carmelita = "carm";
-            public const string Guru = "shaman";
-            public const string PandaKing = "pando";
-            public const string Penelope = "pene";
-            public const string RCCar = "pene rc car";
-            public const string Biplane = "sy biplane";
+            public const string Sly = "Sly";
+            public const string Bentley = "Bentley";
+            public const string Murray = "Murray";
+            public const string Carmelita = "Carmelita";
+            public const string Guru = "Guru";
+            public const string PandaKing = "Panda King";
+            public const string Penelope = "Penelope";
+            public const string RCCar = "Penelope's RC-Car";
+            public const string Biplane = "Sly's Biplane";
         }
 
         public static class BuildNames
         {
             public const string Sly2NTSC = "Sly 2 NTSC";
             public const string Sly2PAL = "Sly 2 PAL";
+            public const string Sly2July11 = "Sly 2 Prototype (July 11)";
+
             public const string Sly3NTSC = "Sly 3 NTSC";
             public const string Sly3PAL = "Sly 3 PAL";
         }
         
 
-        UInt64 ActCharOffset = 0x0;
+        UInt64 CurrentCharStruct;
         public class EntityStruct
         {
             public static UInt64 ID;
@@ -88,8 +117,6 @@ namespace slurky
             public static UInt64 TransformComponent;
             public static UInt64 DetectionComponent;
         }
-        
-        public class CurrEntStruct : EntityStruct{}
 
 
         public string GetCharacterName(UInt64 id)
@@ -144,28 +171,38 @@ namespace slurky
         {
             if(build == BuildNames.Sly2NTSC || build == BuildNames.Sly2PAL)
             {
-                CurrEntStruct.ID = 0x18;
-                CurrEntStruct.God = 0x298;
-                CurrEntStruct.Undetectable = 0x11AC;
-                CurrEntStruct.InfJumps = 0x2E8;
-                CurrEntStruct.TransformComponent = 0x58;
+                EntityStruct.ID = 0x18;
+                EntityStruct.God = 0x298;
+                EntityStruct.Undetectable = 0x11AC;
+                EntityStruct.InfJumps = 0x2E8;
+                EntityStruct.TransformComponent = 0x58;
+                Funs.Lankyness = 0x2400;
 
                 if (build == BuildNames.Sly2NTSC)
                 {
-                    ActCharOffset = ActCharOffsets.Sly2NTSC;
+                    CurrentCharStruct = ActCharPtrs.Sly2NTSC;
                     GlobalAddresses.ActChar = 0x3D4A6C;
                     GlobalAddresses.Reload = 0x3E1080; //aob = +8
+                    GlobalAddresses.CurrentLevelAOB = 0x3E1088;
                     GlobalAddresses.ResetCamera = 0x2DE240;
                     GlobalAddresses.LevelID = 0x3E1110;
+                    GlobalAddresses.Loading = 0x3D3980;
 
                     //engine stuffs
                     GlobalAddresses.CameraSpeed = 0x2DDEDC;
                     GlobalAddresses.DrawDist = 0x2DDF5C;
                     GlobalAddresses.FOV = 0x2DDF60;
+
+                    LevelAOBStart = 0x3E1C40;
+                    LevelAmt = 44;
+
+                    CharStructPtrs.Sly = 0x2E1E40;
+                    CharStructPtrs.Bentley = 0x2DD5BC;
+                    CharStructPtrs.Murray = 0x2F7900;
                 }
                 else if (build == BuildNames.Sly2PAL)
                 {
-                    ActCharOffset = ActCharOffsets.Sly2PAL; 
+                    CurrentCharStruct = ActCharPtrs.Sly2PAL; 
                     GlobalAddresses.ActChar = 0x3DC26C;
                     GlobalAddresses.Reload = 0x3E8880;
                     GlobalAddresses.ResetCamera = 0x2E5640;
@@ -175,40 +212,58 @@ namespace slurky
                     GlobalAddresses.CameraSpeed = 0x2E52DC;
                     GlobalAddresses.DrawDist = 0x2E535C;
                     GlobalAddresses.FOV = 0x2E5360;
+
+                    CharStructPtrs.Sly = 0x2E9240;
+                    CharStructPtrs.Bentley = 0x2E49BC;
+                    CharStructPtrs.Murray = 0x2FF110;
                 }
             }
             else if (build == BuildNames.Sly3NTSC || build == BuildNames.Sly3PAL)
             {
-                CurrEntStruct.ID = 0x18;
-                CurrEntStruct.God = 0x180;
-                CurrEntStruct.Undetectable = 0x11AC;                // unassigned
-                CurrEntStruct.InfJumps = 0x2E8;                     // unassigned
-                CurrEntStruct.TransformComponent = 0x48;            // unassigned
-                CurrEntStruct.DetectionComponent = 0x1160;
+                EntityStruct.ID = 0x18;
+                EntityStruct.God = 0x180;
+                EntityStruct.Undetectable = 0x11AC;                // unassigned
+                EntityStruct.TransformComponent = 0x48;            // unassigned
+                EntityStruct.DetectionComponent = 0x1160;
 
                 cb_infjmp.Invoke((MethodInvoker)delegate
                 {
                     cb_infjmp.Enabled = false;
                 });
-                
+                cb_fun_lanky.Invoke((MethodInvoker)delegate
+                {
+                    cb_fun_lanky.Enabled = false;
+                });
+
 
                 if (build == BuildNames.Sly3NTSC)
                 {
-                    ActCharOffset = ActCharOffsets.Sly3NTSC;
+                    CurrentCharStruct = ActCharPtrs.Sly3NTSC;
                     GlobalAddresses.ActChar = 0x36C710;
                     GlobalAddresses.Reload = 0x4797C4; //aob = +8
+                    GlobalAddresses.CurrentLevelAOB = 0x4797CC;
                     GlobalAddresses.ResetCamera = 0x2DE240;         // unassigned
-                    GlobalAddresses.LevelID = 0x3E1110;             // unassigned
+                    GlobalAddresses.LevelID = 0x47989C;
+                    GlobalAddresses.Loading = 0x467B00;
+                    GlobalAddresses.UnlockGadgets = 0x468DCC;
+                    GlobalAddresses.UnlockGadgets2 = 0x468DD0;
 
                     //engine stuffs
                     GlobalAddresses.CameraSpeed = 0x2DDEDC;         // unassigned
                     GlobalAddresses.DrawDist = 0x2DDF5C;            // unassigned
                     GlobalAddresses.FOV = 0x2DDF60;                 // unassigned
+
+                    LevelAOBStart = 0x2EDFD8;
+                    LevelAmt = 35;
+
+                    CharStructPtrs.Sly = 0x370AC0;
+                    CharStructPtrs.Bentley = 0x36B250;
+                    CharStructPtrs.Murray = 0x38AE90;
                 }
                 else if (build == BuildNames.Sly3PAL)
                 {
-                    ActCharOffset = ActCharOffsets.Sly3PAL;
-                    GlobalAddresses.ActChar = 0x3DC26C;             // unassigned
+                    CurrentCharStruct = ActCharPtrs.Sly3PAL;
+                    GlobalAddresses.ActChar = 0x3DC26C;
                     GlobalAddresses.Reload = 0x3E8880;              // unassigned
                     GlobalAddresses.ResetCamera = 0x2E5640;         // unassigned
                     GlobalAddresses.LevelID = 0x3E8910;             // unassigned
@@ -217,13 +272,246 @@ namespace slurky
                     GlobalAddresses.CameraSpeed = 0x2E52DC;         // unassigned
                     GlobalAddresses.DrawDist = 0x2E535C;            // unassigned
                     GlobalAddresses.FOV = 0x2E5360;                 // unassigned
+
+                    CharStructPtrs.Sly = 0x3702CC;
+                    CharStructPtrs.Bentley = 0x38C550;
+                    CharStructPtrs.Murray = 0x36BCD0;
                 }
             }
         }
+        
+        
+        public void GetLevelAOBs()
+        {
+            if(CurrentBuild.StartsWith("Sly 3"))
+            {
+                GetLevelAOBs_SLY3METHOD();
+                return;
+            }
 
+            LevelAOBList = new List<string>();
+            LevelAOBs = new List<byte[]>();
+
+            LevelAOBList.Clear();
+            UInt64 offset = 0x0;
+            for (UInt64 i = 0; i <= LevelAmt; i++)
+            {
+                offset = i * 0x40;
+                byte[] bytes = m.ReadBytes((BaseAddress + LevelAOBStart).ToString("X") + "," + (BaseAddress + offset).ToString("X"), 0x40);
+
+                string hexString = BitConverter.ToString(bytes);
+                hexString = hexString.Replace("-", " ");
+
+                Console.WriteLine(i + ": " + hexString);
+
+                LevelAOBList.Add(hexString);
+                LevelAOBs.Add(bytes);
+            }
+
+            FillLevelDropdown();
+        }
+
+        public void GetLevelAOBs_SLY3METHOD()
+        {
+            LevelAOBList = new List<string>();
+            LevelAOBs = new List<byte[]>();
+
+            LevelAOBList.Clear();
+            UInt64 offset = 0x0;
+            for (UInt64 i = 0; i <= LevelAmt; i++)
+            {
+                offset = i * 0x40;
+                byte[] bytes = m.ReadBytes(((BaseAddress + LevelAOBStart + offset)).ToString("X"), 0x40);
+
+                string hexString = BitConverter.ToString(bytes);
+                hexString = hexString.Replace("-", " ");
+
+                Console.WriteLine(i + ": " + hexString);
+
+                LevelAOBList.Add(hexString);
+                LevelAOBs.Add(bytes);
+            }
+
+            FillLevelDropdown();
+        }
+
+        void FillLevelDropdown()
+        {
+            string b = GetBuildName();
+            List<string> list = new List<string>();
+            if(b.StartsWith("Sly 2"))
+            {
+                list.Add("Cairo Museum"); list.Add("DVD Menu"); list.Add("Paris Hub"); list.Add("   Wine Cellar");
+                list.Add("   Nightclub"); list.Add("   Print Room"); list.Add("   Theater"); list.Add("   Aqua Pump Room");
+                list.Add("India Palace Hub"); list.Add("   Guesthouse"); list.Add("   Basement"); list.Add("   Ballroom");
+                list.Add("India Jungle Hub"); list.Add("   Spice Grinder"); list.Add("Prague Jail Hub");
+                list.Add("   Jail"); list.Add("   Vault Room"); list.Add("Prague Fortress Hub");
+                list.Add("Monaco Hub"); list.Add("   Crypt 3"); list.Add("   Crypts 1 & 2"); list.Add("   Ghost Capture Crypt");
+                list.Add("   Re-education Tower & Crypt Hack"); list.Add("   Mojo Crypt 1"); list.Add("   Mojo Crypt 3");
+                list.Add("   Mojo Crypt 2"); list.Add("   Mojo Crypt 4"); list.Add("Canada Hub"); list.Add("   Cabins");
+                list.Add("   Train (Aerial Ass.)"); list.Add("   Train (Operation)"); list.Add("   Train (Ride the Iron Horse)");
+                list.Add("Canada 2 Hub"); list.Add("   RC Combat Club"); list.Add("   Sawmill"); list.Add("   Lighthouse");
+                list.Add("   Bear Cave"); list.Add("   Sawmill (Boss)"); list.Add("Blimp Hub"); list.Add("   Blimp HQ");
+                list.Add("   Engine Room (Bentley & Murray)"); list.Add("   Engine Room (Sly & Bentley)"); 
+                list.Add("   Engine Room (Murray & Sly)"); list.Add("   Paris (Clock-la)");
+            }
+            else if (b.StartsWith("Sly 3"))
+            {
+                list.Add("DVD Menu"); list.Add("Sampler Menu"); list.Add("Hazard Room"); list.Add("Venice Hub"); list.Add("   Canal");
+                list.Add("   Coffeehouses"); list.Add("   Gauntlet / Opera House"); list.Add("   Police HQ"); list.Add("Outback Hub");
+                list.Add("   Quarry / Ayers Rock"); list.Add("   Oil Field"); list.Add("   Cave (Sly)"); list.Add("   Cave (Guru)");
+                list.Add("   Lemonade Bar"); list.Add("   Cave (Murray)"); list.Add("Holland Hub"); list.Add("   Hotel");
+                list.Add("   Hangar (Team Iceland)"); list.Add("   Hangar (Team Black Baron)"); list.Add("   Hangar (Team Cooper)");
+                list.Add("   Sewers");
+                list.Add("   Dogfight / Biplane Battlefield"); list.Add("2P Hackathon"); list.Add("China Hub"); list.Add("(China Intro)");
+                list.Add("   Flashback Arena"); list.Add("   Tsao's Battleground"); list.Add("   Panda King Apartment"); 
+                list.Add("   Hall A (Grapplecam)"); list.Add("   Hall B (Tsao's Palace)"); list.Add("   Tilted Hall (Tsao's Treasure Temple)");
+                list.Add("Bloodbath Bay / Pirate Hub"); list.Add("   Sailing Map"); list.Add("   Underwater Shipwreck"); list.Add("   Dagger Island");
+                list.Add("Kaine Island"); list.Add("   Vault (Entrance)"); list.Add("   Vault (Gauntlet)"); list.Add("   Dr. M's Arena");
+            }
+
+
+            cb_loadlvl.Invoke((MethodInvoker)delegate
+            {
+                foreach (string s in list) cb_loadlvl.Items.Add(s);
+            });
+        }
+        public void FillWarpLocations(UInt64 id)
+        {
+            cb_warps.Invoke((MethodInvoker)delegate
+            {
+                cb_warps.Items.Clear();
+            });
+            List<string> list = new List<string>();
+            string nametouse = "";
+
+            if (id == 2)
+            {
+                if (CurrentBuild.StartsWith("Sly 2"))//paris hub
+                {
+                    nametouse = "Paris Hub";
+                    list.Add("Safehouse");
+                    list.Add("Safehouse (Top)");
+                    list.Add("Nightclub (Door)");
+                    list.Add("Nightclub (Window)");
+                    list.Add("Nightclub (Top)");
+                    list.Add("Dimitri's Boat");
+                    list.Add("Courtyard");
+                    list.Add("Tower");
+                    list.Add("Hotel");
+                }
+            }
+            else if (id == 3)
+            {
+                if(CurrentBuild.StartsWith("Sly 2"))//wine cellar
+                {
+                    nametouse = "Wine Cellar";
+                    list.Add("Entrance");
+                    list.Add("Lasers");
+                    list.Add("Office");
+                    list.Add("Music Room");
+                }
+                else if (CurrentBuild.StartsWith("Sly 3"))//venice hub
+                {
+                    nametouse = "Venice Hub";
+                    list.Add("Safehouse");
+                    list.Add("Safehouse (Top)");
+                    list.Add("Police HQ");
+                }
+            }
+            else if (id == 4)
+            {
+                if (CurrentBuild.StartsWith("Sly 2"))//nightclub
+                {
+                    nametouse = "Nightclub";
+                    list.Add("Entrance (Door)");
+                    list.Add("Entrance (Window)");
+                    list.Add("Dancefloor");
+                    list.Add("Dimitri's Office");
+                }
+            }
+            else if (id == 5)
+            {
+                if (CurrentBuild.StartsWith("Sly 2"))//print room
+                {
+                    nametouse = "Print Room";
+                    list.Add("Entrance (Recon)");
+                    list.Add("Bottom Floor");
+                    list.Add("Money Printer");
+                    list.Add("Top Floor");
+                }
+            }
+            else if (id == 6)
+            {
+                if (CurrentBuild.StartsWith("Sly 2"))//theater
+                {
+                    nametouse = "Theater";
+                    list.Add("Entrance");
+                    list.Add("Fan Control");
+                    list.Add("ZzZzZz (TV Guard)");
+                    list.Add("Spotlight Control");
+                }
+            }
+            else if (id == 7)
+            {
+                if (CurrentBuild.StartsWith("Sly 2"))//aqua
+                {
+                    nametouse = "Aqua Pump Room";
+                    list.Add("Entrance");
+                    list.Add("Fireplace");
+                    list.Add("Aqua Pump");
+                }
+            }
+            else if (id == 8)
+            {
+                if (CurrentBuild.StartsWith("Sly 2"))//india hub
+                {
+                    nametouse = "India Palace Hub";
+                    list.Add("Safehouse");
+                    list.Add("Safehouse (Inside)");
+                    list.Add("Palace (Door)");
+                    list.Add("Guesthouse (Top)");
+                    list.Add("Cobra Statue");
+                }
+                else if (CurrentBuild.StartsWith("Sly 3"))//australia hub
+                {
+                    list.Add("Safehouse");
+                    list.Add("Safehouse (Top)");
+                    list.Add("Crane");
+                    list.Add("Truck");
+                }
+            }
+            else if (id == 12)
+            {
+                if (CurrentBuild.StartsWith("Sly 2"))//india2 hub
+                {
+                    nametouse = "India Palace HUB";
+                    list.Add("Safehouse");
+                    list.Add("Safehouse (Inside)");
+                    list.Add("Palace (Door)");
+                    list.Add("Guesthouse (Top)");
+                    list.Add("Cobra Statue");
+                }
+            }
+            else if (id == 15)
+            {
+                if (CurrentBuild.StartsWith("Sly 3"))//holland hub
+                {
+                    list.Add("Safehouse");
+                    list.Add("Baron's Hangar");
+                }
+            }
+
+            list.Sort();    //alphabetical
+            cb_warps.Invoke((MethodInvoker)delegate
+            {
+                foreach(string s in list) cb_warps.Items.Add(s);
+            });
+            DelegateThisShit(label_curlev, nametouse);
+        }
         public class TransformComponent
         {
-            public static UInt64 Scale = 0x0;
+            public static UInt64 Scale = 0x0; 
             public static UInt64 Position = 0x30;
             public static UInt64 Freeze = 0x94;
             public static UInt64 Warp0 = 0x98;
@@ -231,6 +519,11 @@ namespace slurky
         public class DetectionComponent
         {
             public static UInt64 DisableGuardAttacks = 0x1C;
+        }
+
+        public class Funs
+        {
+            public static UInt64 Lankyness;
         }
 
         public SlurkyTrainer()
@@ -342,6 +635,7 @@ namespace slurky
                 }
             }
 
+            GetLevelAOBs();
             while (true)    //main loop
             {
                 OpenPhrog = m.OpenProcess(bgProcessID);
@@ -354,7 +648,19 @@ namespace slurky
                         Application.Restart();
                     }
                     GetSetActiveCharacter();
+                    //FillWarpLocations(1);
+                    UInt64 loadstate = GetGlobalValue(GlobalAddresses.Loading);
+                    if(loadstate == 2)
+                    {
+                        CanFillWarps = true;
+                    }
+                    if(CanFillWarps && loadstate == 3)
+                    {
+                        FillWarpLocations(GetGlobalValue(GlobalAddresses.LevelID));
+                        CanFillWarps = false;
+                    }
 
+                    //Debug.WriteLine(GetGlobalValue(GlobalAddresses.LevelID).ToString());
                 }
                 else
                 {
@@ -377,9 +683,9 @@ namespace slurky
             UInt64 index = 0;
             Color colorToUse = Color.Gray;
 
-            
-            index = GetGlobalValue(GlobalAddresses.ActChar);
 
+            //index = GetGlobalValue(GlobalAddresses.ActChar);
+            index = GetActiveCharacterData(EntityStruct.ID);
 
             toWrite = GetCharacterName(index);
 
@@ -423,7 +729,7 @@ namespace slurky
                 actEntName.ForeColor = colorToUse;
             });
 
-            UInt64 godStatus = GetActiveCharacterData(CurrEntStruct.God);
+            UInt64 godStatus = GetActiveCharacterData(EntityStruct.God);
             if (godStatus == 1)
             {
                 cb_god.Invoke((MethodInvoker)delegate
@@ -439,7 +745,7 @@ namespace slurky
                 });
             }
 
-            UInt64 undetecStatus = GetActiveCharacterData(CurrEntStruct.Undetectable);
+            UInt64 undetecStatus = GetActiveCharacterData(EntityStruct.Undetectable);
             if (undetecStatus == 1)
             {
                 cb_ignore.Invoke((MethodInvoker)delegate
@@ -455,7 +761,7 @@ namespace slurky
                 });
             }
 
-            UInt64 disguardatt = GetActiveCharacterInt(CurrEntStruct.DetectionComponent, DetectionComponent.DisableGuardAttacks);
+            UInt64 disguardatt = GetActiveCharacterInt(EntityStruct.DetectionComponent, DetectionComponent.DisableGuardAttacks);
             if (disguardatt == 1)
             {
                 cb_atttarg.Invoke((MethodInvoker)delegate
@@ -475,7 +781,7 @@ namespace slurky
             float tempX = 0, tempY = 0, tempZ = 0;
             while (true)
             {
-                float tempPos = GetActiveCharacterData(CurrEntStruct.TransformComponent, TransformComponent.Position + help);
+                float tempPos = GetActiveCharacterData(EntityStruct.TransformComponent, TransformComponent.Position + help);
                 help += 4;
                 if(help == 0x4)
                 {
@@ -499,36 +805,58 @@ namespace slurky
             DelegateThisShit(actCoordY, tempY.ToString("f5"));
             DelegateThisShit(actCoordZ, tempZ.ToString("f5"));
 
-            float tempScale = GetActiveCharacterData(CurrEntStruct.TransformComponent, TransformComponent.Scale);
+            float tempScale = GetActiveCharacterData(EntityStruct.TransformComponent, TransformComponent.Scale);
             DelegateThisShit(actScale, tempScale.ToString("f5"));
 
 
+            
+
+
         }
 
+        void WarpSelectedCharacter(float x = 0, float y = 0, float z = 0, bool offsetting = false, float xoff = 0, float yoff = 0, float zoff = 0)
+        {
+            if(offsetting)
+            {
+                float currX = m.ReadFloat((BaseAddress + CurrentCharStruct).ToString("X") + "," + (BaseAddress + EntityStruct.TransformComponent).ToString("X") + "," + (BaseAddress + TransformComponent.Position).ToString("X"));
+                float currY = m.ReadFloat((BaseAddress + CurrentCharStruct).ToString("X") + "," + (BaseAddress + EntityStruct.TransformComponent).ToString("X") + "," + (BaseAddress + TransformComponent.Position + 0x4).ToString("X"));
+                float currZ= m.ReadFloat((BaseAddress + CurrentCharStruct).ToString("X") + "," + (BaseAddress + EntityStruct.TransformComponent).ToString("X") + "," + (BaseAddress + TransformComponent.Position + 0x8).ToString("X"));
+
+
+                x = currX + xoff;
+                y = currY + yoff;
+                z = currZ + zoff;
+            }
+            m.WriteMemory((BaseAddress + CurrentCharStruct).ToString("X") + "," + (BaseAddress + EntityStruct.TransformComponent).ToString("X") + "," + (BaseAddress + TransformComponent.Position).ToString("X"), type: "float", write: x.ToString("f3"));
+            m.WriteMemory((BaseAddress + CurrentCharStruct).ToString("X") + "," + (BaseAddress + EntityStruct.TransformComponent).ToString("X") + "," + (BaseAddress + TransformComponent.Position + 0x4).ToString("X"), type: "float", write: y.ToString("f3"));
+            m.WriteMemory((BaseAddress + CurrentCharStruct).ToString("X") + "," + (BaseAddress + EntityStruct.TransformComponent).ToString("X") + "," + (BaseAddress + TransformComponent.Position + 0x8).ToString("X"), type: "float", write: z.ToString("f3"));
+
+
+        }
         UInt64 GetGlobalValue(UInt64 offset)
         {
-            return m.ReadUInt((BaseAddress + offset).ToString("X8"));
+            return m.ReadUInt((BaseAddress + offset).ToString("X"));
         }
         void SetGlobalValue(UInt64 offset, string type, string towrite)
         {
-            m.WriteMemory((BaseAddress + offset).ToString("X8"), type, towrite);
+            m.WriteMemory((BaseAddress + offset).ToString("X"), type, towrite);
         }
         UInt64 GetActiveCharacterData(UInt64 offset)
         {
             // thanks niv
-            return m.ReadUInt((BaseAddress + ActCharOffset).ToString("X8") + "," + (BaseAddress + offset).ToString("X8"));
+            return m.ReadUInt((BaseAddress + CurrentCharStruct).ToString("X") + "," + (BaseAddress + offset).ToString("X"));
         }
 
 
         UInt64 GetActiveCharacterInt(UInt64 offset, UInt64 offset2)
         {
-            return m.ReadUInt((BaseAddress + ActCharOffset).ToString("X8") + "," + (BaseAddress + offset).ToString("X8") + "," + (BaseAddress + offset2).ToString("X8"));
+            return m.ReadUInt((BaseAddress + CurrentCharStruct).ToString("X") + "," + (BaseAddress + offset).ToString("X") + "," + (BaseAddress + offset2).ToString("X"));
         }
 
 
         float GetActiveCharacterData(UInt64 offset, UInt64 offset2)
         {
-            return m.ReadFloat((BaseAddress + ActCharOffset).ToString("X8") + "," + (BaseAddress + offset).ToString("X8") + "," + (BaseAddress + offset2).ToString("X8"), round: false);
+            return m.ReadFloat((BaseAddress + CurrentCharStruct).ToString("X") + "," + (BaseAddress + offset).ToString("X") + "," + (BaseAddress + offset2).ToString("X"), round: false);
         }
 
         void SetActiveCharacterData(UInt64 offset, int setTo, bool freeze = false, bool unfreeze = false)
@@ -537,26 +865,26 @@ namespace slurky
             {
                 if(!unfreeze)
                 {
-                    m.FreezeValue((BaseAddress + ActCharOffset).ToString("X8") + "," + (BaseAddress + offset).ToString("X8"), "int", setTo.ToString());
+                    m.FreezeValue((BaseAddress + CurrentCharStruct).ToString("X") + "," + (BaseAddress + offset).ToString("X"), "int", setTo.ToString());
                     return;
                 }
 
-                m.UnfreezeValue((BaseAddress + ActCharOffset).ToString("X8") + "," + (BaseAddress + offset).ToString("X8"));
+                m.UnfreezeValue((BaseAddress + CurrentCharStruct).ToString("X") + "," + (BaseAddress + offset).ToString("X"));
                 return;
             }
-            m.WriteMemory((BaseAddress + ActCharOffset).ToString("X8") + "," + (BaseAddress + offset).ToString("X8"), "int", setTo.ToString());
+            m.WriteMemory((BaseAddress + CurrentCharStruct).ToString("X") + "," + (BaseAddress + offset).ToString("X"), "int", setTo.ToString());
         }
 
         void SetActiveCharacterData(UInt64 offset, UInt64 offset2, string setTo, bool vec3 = false, string writeType = "float")
         {
-            m.WriteMemory((BaseAddress + ActCharOffset).ToString("X8") + "," + (BaseAddress + offset).ToString("X8") + "," + (BaseAddress + offset2).ToString("X8"), writeType, setTo);
+            m.WriteMemory((BaseAddress + CurrentCharStruct).ToString("X") + "," + (BaseAddress + offset).ToString("X") + "," + (BaseAddress + offset2).ToString("X"), writeType, setTo);
             
             if(vec3)
             {
                 UInt64 toAdd = 0x14;
                 while(true)
                 {
-                    m.WriteMemory((BaseAddress + ActCharOffset).ToString("X8") + "," + (BaseAddress + offset).ToString("X8") + "," + (BaseAddress + offset2 + toAdd).ToString("X8"), type: writeType, write: setTo);
+                    m.WriteMemory((BaseAddress + CurrentCharStruct).ToString("X") + "," + (BaseAddress + offset).ToString("X") + "," + (BaseAddress + offset2 + toAdd).ToString("X"), type: writeType, write: setTo);
                     toAdd+=0x14;
                     if(toAdd > 0x28)
                     {
@@ -667,30 +995,30 @@ namespace slurky
         {
             if(cb_god.Checked) 
             {
-                SetActiveCharacterData(CurrEntStruct.God, 1);
+                SetActiveCharacterData(EntityStruct.God, 1);
                 return;
             }
-            SetActiveCharacterData(CurrEntStruct.God, 0);
+            SetActiveCharacterData(EntityStruct.God, 0);
         }
 
         private void cb_ignore_CheckedChanged(object sender, EventArgs e)
         {
             if (cb_ignore.Checked) 
             {
-                SetActiveCharacterData(CurrEntStruct.Undetectable, 1);
+                SetActiveCharacterData(EntityStruct.Undetectable, 1);
                 return;
             }
-            SetActiveCharacterData(CurrEntStruct.Undetectable, 0);
+            SetActiveCharacterData(EntityStruct.Undetectable, 0);
         }
 
         private void cb_atttarg_CheckedChanged(object sender, EventArgs e)
         {
             if (cb_atttarg.Checked)
             {
-                SetActiveCharacterData(offset: CurrEntStruct.DetectionComponent, offset2: DetectionComponent.DisableGuardAttacks, setTo: "1");
+                SetActiveCharacterData(offset: EntityStruct.DetectionComponent, offset2: DetectionComponent.DisableGuardAttacks, setTo: "1");
                 return;
             }
-            SetActiveCharacterData(offset: CurrEntStruct.DetectionComponent, offset2: DetectionComponent.DisableGuardAttacks, setTo: "0");
+            SetActiveCharacterData(offset: EntityStruct.DetectionComponent, offset2: DetectionComponent.DisableGuardAttacks, setTo: "0");
         }
 
 
@@ -715,7 +1043,7 @@ namespace slurky
         private void btn_freezeAct_Click(object sender, EventArgs e)
         {
             UInt64 towrite;
-            UInt64 temp = GetActiveCharacterInt(offset: CurrEntStruct.TransformComponent, TransformComponent.Freeze);
+            UInt64 temp = GetActiveCharacterInt(offset: EntityStruct.TransformComponent, TransformComponent.Freeze);
             Console.WriteLine(temp.ToString("X"));
             if (temp != 0) towrite = 0;
             else towrite = 1;
@@ -729,20 +1057,309 @@ namespace slurky
 
         private void btn_warp_Click(object sender, EventArgs e)
         {
-            SetGlobalValue(GlobalAddresses.ResetCamera, "int", "1");    //  reset cam when warpin
+            string txt = cb_warps.Text;
+            if(txt != "")
+            {
+                UInt64 mapid = GetGlobalValue(GlobalAddresses.LevelID);
+                float x = 0, y = 0, z = 0;
+                if (CurrentBuild.StartsWith("Sly 2"))
+                {
+                    if (mapid == 2) //paris hub
+                    {
+                        switch (txt)
+                        {
+                            default:
+                                break;
+                            case "Safehouse":
+                                x = -1800; y = -4100; z = 535; break;
+                            case "Safehouse (Top)":
+                                x = -2665; y = -3640; z = 1256; break;
+                            case "Nightclub (Door)":
+                                x = -1645; y = 5655; z = 60; break;
+                            case "Nightclub (Window)":
+                                x = -3455; y = 5510; z = 1100; break;
+                            case "Nightclub (Top)":
+                                x = 0; y = 0; z = 5000; break;
+                            case "Dimitri's Boat":
+                                x = -7090; y = -6320; z = -30; break;
+                            case "Courtyard":
+                                x = 1860; y = 5630; z = -50; break;
+                            case "Tower":
+                                x = 8600; y = 2080; z = 2070; break;
+                            case "Hotel":
+                                x = 4430; y = -8000; z = 2420; break;
+                        }
+                    }
+                    else if (mapid == 3) //wine cellar
+                    {
+                        switch (txt)
+                        {
+                            default:
+                                break;
+                            case "Entrance":
+                                x = 14500; y = -6700; z = 470; break;
+                            case "Lasers":
+                                x = 10340; y = -3900; z = 60; break;
+                            case "Office":
+                                x = 5800; y = -2900; z = -150; break;
+                            case "Music Room":
+                                x = 95; y = 2850; z = 125; break;
+                        }
+                    }
+                    else if (mapid == 4) //night club
+                    {
+                        switch (txt)
+                        {
+                            default:
+                                break;
+                            case "Entrance (Door)":
+                                x = -2670; y = 5880; z = -540; break;
+                            case "Entrance (Window)":
+                                x = -7780; y = 1440; z = 810; break;
+                            case "Dancefloor":
+                                x = -7030; y = 8845; z = -1000; break;
+                            case "Dimitri's Office":
+                                x = -3800; y = 6460; z = 200; break;
+                        }
+                    }
+                    else if (mapid == 5) //print room
+                    {
+                        switch (txt)
+                        {
+                            default:
+                                break;
+                            case "Entrance (Recon)":
+                                x = -1100; y = 4180; z = 1470; break;
+                            case "Bottom Floor":
+                                x = 0; y = 0; z = -50; break;
+                            case "Money Printer":
+                                x = 0; y = 900; z = 740; break;
+                            case "Top Floor":
+                                x = 0; y = 1800; z = 1570; break;
+                        }
+                    }
+                    else if (mapid == 6) //theater
+                    {
+                        switch (txt)
+                        {
+                            default:
+                                break;
+                            case "Entrance":
+                                x = -40; y = 4220; z = 910; break;
+                            case "Fan Control":
+                                x = 7000; y = 5110; z = 730; break;
+                            case "ZzZzZz (TV Guard)":
+                                x = 3800; y = 8490; z = 895; break;
+                            case "Spotlight Control":
+                                x = 2560; y = 5820; z = 1560; break;
+                        }
+                    }
+                    else if (mapid == 7) //aqua
+                    {
+                        switch (txt)
+                        {
+                            default:
+                                break;
+                            case "Entrance":
+                                x = -13060; y = 6580; z = -170; break;
+                            case "Fireplace":
+                                x = -9670; y = 2470; z = -540; break;
+                            case "Aqua Pump":
+                                x = -5560; y = 3850; z = 130; break;
+                        }
+                    }
+                    else if (mapid == 8) //india 1
+                    {
+                        switch (txt)
+                        {
+                            default:
+                                break;
+                            case "Safehouse":
+                                x = -4600; y = 2180; z = 460; break;
+                            case "Safehouse (Inside)":
+                                x = -6670; y = -1470; z = 2270; break;
+                            case "Palace (Door)":
+                                x = 10000; y = 2100; z = 1690; break;
+                            case "Guesthouse (Top)":
+                                x = 3160; y = -10420; z = 1770; break;
+                            case "Cobra Statue":
+                                x = 6950; y = 8680; z = 1770; break;
+                        }
+                    }
+
+                }
+                else if(CurrentBuild.StartsWith("Sly 3"))
+                {
+                    if(mapid == 3)
+                    {
+                        switch(txt)
+                        {
+                            default:
+                                break;
+                            case "Safehouse":
+                                x = 200; y = -2090; z = 173; break;
+                            case "Safehouse (Top)":
+                                x = 863; y = -1420; z = 1266; break;
+                            case "Police HQ":
+                                x = -7570; y = 1670; z = 1962; break;
+                        }
+                    }
+                    else if (mapid == 8)
+                    {
+                        switch (txt)
+                        {
+                            default:
+                                break;
+                            case "Safehouse":
+                                x = -4570; y = -7190; z = 1525; break;
+                            case "Safehouse (Top)":
+                                x = -4590; y = -7820; z = 2650; break;
+                            case "Crane":
+                                x = -700; y = -1290; z = 4320; break;
+                            case "Truck":
+                                x = 9820; y = -550; z = 1240; break;
+                        }
+                    }
+                }
+
+                WarpSelectedCharacter(x, y, z+100);
+                SetGlobalValue(GlobalAddresses.ResetCamera, "int", "1");    //  reset cam when warpin
+            }
+            
         }
 
         private void cb_character_SelectedIndexChanged(object sender, EventArgs e)
         {
             string sel = cb_character.Text;
             string b = GetBuildName();
-            if (sel == "Active Character")
+            if (sel == "Active")
             {
                 if(b == BuildNames.Sly2NTSC)
                 {
-
+                    CurrentCharStruct = ActCharPtrs.Sly2NTSC;
+                }
+                else if (b == BuildNames.Sly2PAL)
+                {
+                    CurrentCharStruct = ActCharPtrs.Sly2PAL;
+                }
+                else if (b == BuildNames.Sly3NTSC)
+                {
+                    CurrentCharStruct = ActCharPtrs.Sly3NTSC;
+                }
+                else if (b == BuildNames.Sly3PAL)
+                {
+                    CurrentCharStruct = ActCharPtrs.Sly3PAL;
                 }
             }
+            else if (sel == CharacterNames.Sly)
+            {
+                CurrentCharStruct = CharStructPtrs.Sly;
+            }
+            else if (sel == CharacterNames.Bentley)
+            {
+                CurrentCharStruct = CharStructPtrs.Bentley;
+            }
+            else if (sel == CharacterNames.Murray)
+            {
+                CurrentCharStruct = CharStructPtrs.Murray;
+            }
+
+        }
+
+        private void btn_loadlvl_Click(object sender, EventArgs e)
+        {
+            if(cb_loadlvl.Text != "")
+            {
+                m.WriteBytes((BaseAddress + GlobalAddresses.CurrentLevelAOB).ToString("X"), LevelAOBs[cb_loadlvl.SelectedIndex]);
+                SetGlobalValue(GlobalAddresses.Reload, "int", "1");
+            }
+        }
+
+        private void cb_fun_lanky_CheckedChanged(object sender, EventArgs e)
+        {
+            if(cb_fun_lanky.Checked)
+            {
+                m.FreezeValue((BaseAddress + CharStructPtrs.Sly).ToString("X") +
+                "," + (BaseAddress + EntityStruct.TransformComponent).ToString("X") +
+                "," + (BaseAddress + Funs.Lankyness).ToString("X"), "float", "0.4");
+                
+                m.FreezeValue((BaseAddress + CharStructPtrs.Sly).ToString("X") +
+                "," + (BaseAddress + EntityStruct.TransformComponent).ToString("X") +
+                "," + (BaseAddress + Funs.Lankyness+0x14).ToString("X"), "float", "0.4");
+                
+                m.FreezeValue((BaseAddress + CharStructPtrs.Sly).ToString("X") +
+                "," + (BaseAddress + EntityStruct.TransformComponent).ToString("X") +
+                "," + (BaseAddress + Funs.Lankyness + 0x28).ToString("X"), "float", "0.4");
+            }
+            else
+            {
+                m.UnfreezeValue((BaseAddress + CharStructPtrs.Sly).ToString("X") +
+                "," + (BaseAddress + EntityStruct.TransformComponent).ToString("X") +
+                "," + (BaseAddress + Funs.Lankyness).ToString("X"));
+                
+                m.UnfreezeValue((BaseAddress + CharStructPtrs.Sly).ToString("X") +
+                "," + (BaseAddress + EntityStruct.TransformComponent).ToString("X") +
+                "," + (BaseAddress + Funs.Lankyness + 0x14).ToString("X"));
+
+                m.UnfreezeValue((BaseAddress + CharStructPtrs.Sly).ToString("X") +
+                "," + (BaseAddress + EntityStruct.TransformComponent).ToString("X") +
+                "," + (BaseAddress + Funs.Lankyness + 0x28).ToString("X"));
+
+
+
+                m.WriteMemory((BaseAddress + CharStructPtrs.Sly).ToString("X") +
+                "," + (BaseAddress + EntityStruct.TransformComponent).ToString("X") +
+                "," + (BaseAddress + Funs.Lankyness).ToString("X"), "float", "1");
+
+                m.WriteMemory((BaseAddress + CharStructPtrs.Sly).ToString("X") +
+                "," + (BaseAddress + EntityStruct.TransformComponent).ToString("X") +
+                "," + (BaseAddress + Funs.Lankyness + 0x14).ToString("X"), "float", "1");
+
+                m.WriteMemory((BaseAddress + CharStructPtrs.Sly).ToString("X") +
+                "," + (BaseAddress + EntityStruct.TransformComponent).ToString("X") +
+                "," + (BaseAddress + Funs.Lankyness + 0x28).ToString("X"), "float", "1");
+            }
+        }
+
+        private void btn_allgadgets_Click(object sender, EventArgs e)
+        {
+            SetGlobalValue(GlobalAddresses.UnlockGadgets, "int", "-1");
+            SetGlobalValue(GlobalAddresses.UnlockGadgets2, "int", "-1");
+        }
+
+        private void btn_decX_Click(object sender, EventArgs e)
+        {
+            WarpSelectedCharacter(offsetting: true, xoff: -CoordAdjustAmt);
+        }
+
+        private void btn_incX_Click(object sender, EventArgs e)
+        {
+            WarpSelectedCharacter(offsetting: true, xoff: CoordAdjustAmt);
+        }
+
+        private void btn_decY_Click(object sender, EventArgs e)
+        {
+            WarpSelectedCharacter(offsetting: true, yoff: -CoordAdjustAmt);
+        }
+
+        private void btn_incY_Click(object sender, EventArgs e)
+        {
+            WarpSelectedCharacter(offsetting: true, yoff: CoordAdjustAmt);
+        }
+
+        private void btn_decZ_Click(object sender, EventArgs e)
+        {
+            WarpSelectedCharacter(offsetting: true, zoff: -CoordAdjustAmt);
+        }
+
+        private void btn_incZ_Click(object sender, EventArgs e)
+        {
+            WarpSelectedCharacter(offsetting: true, zoff: CoordAdjustAmt);
+        }
+
+        private void tbar_coordmag_ValueChanged(object sender, EventArgs e)
+        {
+            CoordAdjustAmt = tbar_coordmag.Value;
         }
 
         string GetBuildName()
@@ -752,8 +1369,8 @@ namespace slurky
             
             if (m.ReadString((BaseAddress + 0x2C46D8).ToString("X")) == "0813.0032") return BuildNames.Sly2NTSC;
             else if (m.ReadString((BaseAddress + 0x2CBB08).ToString("X")) == "0914.1846") return BuildNames.Sly2PAL;
-            else if (m.ReadString((BaseAddress + 0x2C6470).ToString("X")) == "0711.1656") return "Sly 2 Prototype (July 11)";
-            else if (m.ReadString((BaseAddress + 0x34A2F8).ToString("X")) == "0828.0212") return "Sly 3 NTSC";
+            else if (m.ReadString((BaseAddress + 0x2C6470).ToString("X")) == "0711.1656") return BuildNames.Sly2July11;
+            else if (m.ReadString((BaseAddress + 0x34A2F8).ToString("X")) == "0828.0212") return BuildNames.Sly3NTSC;
 
 
 

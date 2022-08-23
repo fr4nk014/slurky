@@ -90,6 +90,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\Blambot Casual Bold.ttf" />
     <None Include="Resources\slurk.ico" />
   </ItemGroup>
   <ItemGroup>
