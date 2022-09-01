@@ -58,6 +58,7 @@ namespace slurky
             public static UInt64 FOV;
             public static UInt64 Clock;
             public static UInt64 Loading;
+            public static UInt64 GuardAI;
 
             public static UInt64 UnlockGadgets;
 
@@ -118,6 +119,14 @@ namespace slurky
             public static UInt64 InfJumps;
             public static UInt64 TransformComponent;
             public static UInt64 DetectionComponent;
+            public static UInt64 ColliderPtr;
+        }
+
+        public class CameraStuff
+        {
+            //sly 3 specific bullshittery
+            public static UInt64 Cam0Ptr;
+            public static UInt64 CamReset;
         }
 
         public class MiscPtrs
@@ -198,11 +207,11 @@ namespace slurky
                 cb_loadas.Invoke((MethodInvoker)delegate
                 {
                     cb_loadas.Items.Clear();
-                    cb_loadas.Items.Add("Active");
-                    cb_loadas.Items.Add("Sly");
-                    cb_loadas.Items.Add("Bentley");
-                    cb_loadas.Items.Add("Murray");
+                    cb_loadas.Items.Add(CharacterNames.Sly);
+                    cb_loadas.Items.Add(CharacterNames.Bentley);
+                    cb_loadas.Items.Add(CharacterNames.Murray);
                 });
+                LevelAmt = 44;
 
                 if (build == BuildNames.Sly2NTSC)
                 {
@@ -221,7 +230,7 @@ namespace slurky
                     GlobalAddresses.FOV = 0x2DDF64; //-0x4 = currentfov
 
                     LevelAOBStart = 0x3E1C40;
-                    LevelAmt = 44;
+                    
 
                     CharStructPtrs.Sly = 0x2E1E40;
                     CharStructPtrs.Bentley = 0x2DD5BC;
@@ -256,6 +265,7 @@ namespace slurky
                 EntityStruct.Undetectable = 0x1280;
                 EntityStruct.TransformComponent = 0x48;
                 EntityStruct.DetectionComponent = 0x1160;
+                EntityStruct.ColliderPtr = 0xD8;
 
                 cb_infjmp.Invoke((MethodInvoker)delegate
                 {
@@ -275,12 +285,14 @@ namespace slurky
                 cb_loadas.Invoke((MethodInvoker)delegate
                 {
                     cb_loadas.Items.Clear();
-                    cb_loadas.Items.Add("Active");
-                    cb_loadas.Items.Add("Sly");
-                    cb_loadas.Items.Add("Bentley");
-                    cb_loadas.Items.Add("Murray");
+                    cb_loadas.Items.Add(CharacterNames.Sly);
+                    cb_loadas.Items.Add(CharacterNames.Bentley);
+                    cb_loadas.Items.Add(CharacterNames.Murray);
+                    cb_loadas.Items.Add(CharacterNames.Guru);
+                    cb_loadas.Items.Add(CharacterNames.PandaKing);
+                    cb_loadas.Items.Add(CharacterNames.Penelope);
                 });
-
+                LevelAmt = 39;
 
                 if (build == BuildNames.Sly3NTSC)
                 {
@@ -288,30 +300,38 @@ namespace slurky
                     GlobalAddresses.ActChar = 0x36C710;
                     GlobalAddresses.Reload = 0x4797C4; //aob = +8
                     GlobalAddresses.CurrentLevelAOB = 0x4797CC;
-                    GlobalAddresses.ResetCamera = 0x2DE240;         // unassigned
+                    //GlobalAddresses.ResetCamera = 0xD40384;
                     GlobalAddresses.LevelID = 0x47989C;
                     GlobalAddresses.Loading = 0x467B00;
                     GlobalAddresses.UnlockGadgets = 0x468DCC;
 
+                    GlobalAddresses.GuardAI = 0x370a8c;
+
                     //engine stuffs
-                    GlobalAddresses.CameraSpeed = 0x2DDEDC;         // unassigned
+                    GlobalAddresses.CameraSpeed = 0x36BBA4;
                     GlobalAddresses.DrawDist = 0x2DDF5C;            // unassigned
                     GlobalAddresses.FOV = 0x2DDF60;                 // unassigned
 
                     LevelAOBStart = 0x2EDFD8;
-                    LevelAmt = 35;
+                    
 
                     CharStructPtrs.Sly = 0x370AC0;
                     CharStructPtrs.Bentley = 0x36B250;
                     CharStructPtrs.Murray = 0x38AE90;
+
+                    CameraStuff.Cam0Ptr = 0x47933C;
+                    CameraStuff.CamReset = 0x2F4;
                 }
                 else if (build == BuildNames.Sly3PAL)
                 {
                     CurrentCharStruct = ActCharPtrs.Sly3PAL;
                     GlobalAddresses.ActChar = 0x3DC26C;
                     GlobalAddresses.Reload = 0x3E8880;              // unassigned
-                    GlobalAddresses.ResetCamera = 0x2E5640;         // unassigned
+                    //GlobalAddresses.ResetCamera = 0xC68824;         
                     GlobalAddresses.LevelID = 0x3E8910;             // unassigned
+
+                    GlobalAddresses.GuardAI = 0x37150c;
+
 
                     //engine stuffs
                     GlobalAddresses.CameraSpeed = 0x2E52DC;         // unassigned
@@ -419,7 +439,7 @@ namespace slurky
                 list.Add("   Flashback Arena"); list.Add("   Tsao's Battleground"); list.Add("   Panda King Apartment");
                 list.Add("   Hall A (Grapplecam)"); list.Add("   Hall B (Tsao's Palace)"); list.Add("   Tilted Hall (Tsao's Treasure Temple)");
                 list.Add("Bloodbath Bay / Pirate Hub"); list.Add("   Sailing Map"); list.Add("   Underwater Shipwreck"); list.Add("   Dagger Island");
-                list.Add("Kaine Island"); list.Add("   Vault (Entrance)"); list.Add("   Vault (Gauntlet)"); list.Add("   Dr. M's Arena");
+                list.Add("Kaine Island"); list.Add("   Underwater"); list.Add("   Vault (Entrance)"); list.Add("   Vault (Gauntlet)"); list.Add("   Dr. M's Arena");
             }
 
 
@@ -436,333 +456,7 @@ namespace slurky
                 list.Add("Spawn");
             }
         }
-        public void FillWarpLocations(UInt64 id)
-        {
-            cb_warps.Invoke((MethodInvoker)delegate
-            {
-                cb_warps.Items.Clear();
-            });
-            List<string> list = new List<string>();
-            string nametouse = "";
-
-            if (id == 0)
-            {
-                if (CurrentBuild.StartsWith("Sly 2"))//cairo
-                {
-                    nametouse = "Cairo Museum";
-                    list.Add("Spawn");
-                    list.Add("Balcony 1");
-                    list.Add("Balcony 2");
-                    list.Add("Murray Rendezvous");
-                    list.Add("Warehouse");
-                    list.Add("Chase Start");
-                    list.Add("Pickup Point");
-                }
-            }
-            else if (id == 2)
-            {
-                if (CurrentBuild.StartsWith("Sly 2"))//paris hub
-                {
-                    nametouse = "Paris Hub";
-                    list.Add("Safehouse");
-                    list.Add("Safehouse (Top)");
-                    list.Add("Nightclub (Door)");
-                    list.Add("Nightclub (Window)");
-                    list.Add("Nightclub (Top)");
-                    list.Add("Dimitri's Boat");
-                    list.Add("Courtyard");
-                    list.Add("Tower");
-                    list.Add("Hotel");
-                }
-            }
-            else if (id == 3)
-            {
-                if (CurrentBuild.StartsWith("Sly 2"))//wine cellar
-                {
-                    nametouse = "Wine Cellar";
-                    list.Add("Entrance");
-                    list.Add("Lasers");
-                    list.Add("Office");
-                    list.Add("Music Room");
-                }
-                else if (CurrentBuild.StartsWith("Sly 3"))//venice hub
-                {
-                    nametouse = "Venice Hub";
-                    list.Add("Safehouse");
-                    list.Add("Safehouse (Top)");
-                    list.Add("Police HQ");
-                }
-            }
-            else if (id == 4)
-            {
-                if (CurrentBuild.StartsWith("Sly 2"))//nightclub
-                {
-                    nametouse = "Nightclub";
-                    list.Add("Entrance (Door)");
-                    list.Add("Entrance (Window)");
-                    list.Add("Dancefloor");
-                    list.Add("Dimitri's Office");
-                }
-            }
-            else if (id == 5)
-            {
-                if (CurrentBuild.StartsWith("Sly 2"))//print room
-                {
-                    nametouse = "Print Room";
-                    list.Add("Entrance (Recon)");
-                    list.Add("Bottom Floor");
-                    list.Add("Money Printer");
-                    list.Add("Top Floor");
-                }
-            }
-            else if (id == 6)
-            {
-                if (CurrentBuild.StartsWith("Sly 2"))//theater
-                {
-                    nametouse = "Theater";
-                    list.Add("Entrance");
-                    list.Add("Fan Control");
-                    list.Add("ZzZzZz (TV Guard)");
-                    list.Add("Spotlight Control");
-                }
-            }
-            else if (id == 7)
-            {
-                if (CurrentBuild.StartsWith("Sly 2"))//aqua
-                {
-                    nametouse = "Aqua Pump Room";
-                    list.Add("Entrance");
-                    list.Add("Fireplace");
-                    list.Add("Aqua Pump");
-                }
-            }
-            else if (id == 8)
-            {
-                if (CurrentBuild.StartsWith("Sly 2"))//india hub
-                {
-                    nametouse = "India Palace Hub";
-                    list.Add("Safehouse");
-                    list.Add("Safehouse (Inside)");
-                    list.Add("Palace (Door)");
-                    list.Add("Guesthouse (Top)");
-                    list.Add("Cobra Statue");
-                    list.Add("Drain Pipe (Basement Entrance)");
-                    list.Add("Drawbridge Control");
-                }
-                else if (CurrentBuild.StartsWith("Sly 3"))//australia hub
-                {
-                    list.Add("Safehouse");
-                    list.Add("Safehouse (Top)");
-                    list.Add("Crane");
-                    list.Add("Truck");
-                }
-            }
-            else if (id == 9)
-            {
-                if (CurrentBuild.StartsWith("Sly 2"))//guesthouse
-                {
-                    nametouse = "Guesthouse";
-                    list.Add("Entrance");
-                    list.Add("Room 101");
-                    list.Add("Room 102");
-                    list.Add("Room 103");
-                    list.Add("Room 104");
-                    list.Add("Room 105");
-                }
-                else if (CurrentBuild.StartsWith("Sly 3"))
-                {
-                }
-            }
-            else if (id == 10)
-            {
-                if (CurrentBuild.StartsWith("Sly 2"))//palace basement
-                {
-                    nametouse = "Palace Basement";
-                    list.Add("Entrance");
-                    list.Add("Vault");
-                    list.Add("Boardroom");
-                }
-                else if (CurrentBuild.StartsWith("Sly 3"))
-                {
-                }
-            }
-            else if (id == 11)
-            {
-                if (CurrentBuild.StartsWith("Sly 2"))//ballroom
-                {
-                    nametouse = "Ballroom";
-                    list.Add("Entrance");
-                    list.Add("Dance Floor");
-                    list.Add("Guests (Left)");
-                    list.Add("Guests (Right)");
-
-                }
-                else if (CurrentBuild.StartsWith("Sly 3"))
-                {
-                }
-            }
-            else if (id == 12)
-            {
-                if (CurrentBuild.StartsWith("Sly 2"))//india2 hub
-                {
-                    nametouse = "India Jungle Hub";
-                    list.Add("Safehouse");
-                    list.Add("Safehouse (Top)");
-                    list.Add("Tilting Temple");
-                    list.Add("Temple Entrance");
-                    list.Add("Waterfall");
-                    list.Add("Top of Dam");
-                }
-            }
-            else if (id == 13)
-            {
-                if (CurrentBuild.StartsWith("Sly 2"))//spice fac
-                {
-                    nametouse = "Spice Factory";
-                    list.Add("Factory Entrance");
-                    list.Add("Factory Entrance (Top)");
-                    list.Add("Factory Recon Area");
-                    list.Add("Spice Grinder");
-                    list.Add("Spice Grinder Entrance");
-                    list.Add("Rajan's Office");
-                }
-            }
-            else if (id == 14)
-            {
-                if (CurrentBuild.StartsWith("Sly 2"))//prague 1
-                {
-                    nametouse = "Prague Jail Hub";
-                    list.Add("Safehouse");
-                    list.Add("Safehouse (Top)");
-                    list.Add("Bridge");
-                    list.Add("Prison (Center)");
-                    list.Add("Prison (Sly)");
-                    list.Add("Rooftop 1");
-                    list.Add("Rooftop 2");
-                    list.Add("Weird House");
-                }
-            }
-            else if (id == 15)
-            {
-                if (CurrentBuild.StartsWith("Sly 2"))//prague 1 jail
-                {
-                    nametouse = "Jail";
-                    list.Add("Entrance");
-                    list.Add("Murray's Cell");
-                    list.Add("Hypno Arena");
-                    list.Add("Control Room");
-
-                }
-                else if (CurrentBuild.StartsWith("Sly 3"))//holland hub
-                {
-                    list.Add("Safehouse");
-                    list.Add("Baron's Hangar");
-                }
-            }
-            else if (id == 16)
-            {
-                if (CurrentBuild.StartsWith("Sly 2"))//vault room weird lights
-                {
-                    nametouse = "Scuffed Vault Room";
-                    list.Add("Entrance");
-                    list.Add("Behind the Wall");
-                }
-                else if (CurrentBuild.StartsWith("Sly 3"))
-                {
-                }
-            }
-            else if (id == 17)
-            {
-                if (CurrentBuild.StartsWith("Sly 2"))//prague 2
-                {
-                    nametouse = "Prague Fortress Hub";
-                    list.Add("Safehouse");
-                    list.Add("Sewer");
-                    list.Add("Graveyard");
-                    list.Add("Castle Top 1");
-                    list.Add("Castle Top 2");
-                    list.Add("Castle Top 3");
-                    list.Add("Guillotine");
-                    list.Add("Re-education Tower (Entrance)");
-                    list.Add("Re-education Tower (Balcony)");
-                }
-                else if (CurrentBuild.StartsWith("Sly 3"))
-                {
-                }
-            }
-            else if (id == 18)
-            {
-                if (CurrentBuild.StartsWith("Sly 2"))//prague 2
-                {
-                    nametouse = "Monaco Hub";
-                }
-                else if (CurrentBuild.StartsWith("Sly 3"))
-                {
-                }
-            }
-            else if (id == 19)
-            {
-                if (CurrentBuild.StartsWith("Sly 2"))//crypt3
-                {
-                    nametouse = "Crypt 3";
-                    list.Add("Entrance");
-                    list.Add("End");
-                }
-                else if (CurrentBuild.StartsWith("Sly 3"))
-                {
-                }
-            }
-            else if (id == 20)
-            {
-                if (CurrentBuild.StartsWith("Sly 2"))//crypt12
-                {
-                    nametouse = "Crypts 1 + 2";
-                    list.Add("Entrance (Crypt 1)");
-                    list.Add("Vault (Crypt 1)");
-                    list.Add("Entrance (Crypt 2)");
-                    list.Add("End (Crypt 2)");
-                }
-                else if (CurrentBuild.StartsWith("Sly 3"))
-                {
-                }
-            }
-            else if (id == 21)
-            {
-                if (CurrentBuild.StartsWith("Sly 2"))//crypt ghost cap
-                {
-                    nametouse = "Ghost Capture Crypt";
-                    list.Add("Entrance");
-                    list.Add("Tomb");
-                }
-                else if (CurrentBuild.StartsWith("Sly 3"))
-                {
-                }
-            }
-            else if (id == 22)
-            {
-                if (CurrentBuild.StartsWith("Sly 2"))//re edu
-                {
-                    nametouse = "Re.education Tower / Crypt Hack";
-                    list.Add("Entrance (Re-education Tower)");
-                    list.Add("Re-education Cell");
-                    list.Add("Entrance (Hack)");
-                    list.Add("End (Hack)");
-                    list.Add("Unused Area 1");
-                    list.Add("Unused Area 2");
-                    list.Add("Unused Area 3");
-                }
-                else if (CurrentBuild.StartsWith("Sly 3"))
-                {
-                }
-            }
-
-            list.Sort();    //alphabetical
-            cb_warps.Invoke((MethodInvoker)delegate
-            {
-                foreach (string s in list) cb_warps.Items.Add(s);
-            });
-            DelegateThisShit(label_curlev, nametouse);
-        }
+        
         public class TransformComponent
         {
             public static UInt64 Scale = 0x0;
@@ -857,7 +551,7 @@ namespace slurky
                         processStatuslabel.Invoke((MethodInvoker)delegate
                         {
                             processStatuslabel.Text = "found base address: (0x" + BaseAddress.ToString("X") + ").";
-                            processStatuslabel.ForeColor = Color.Black;
+                            processStatuslabel.ForeColor = Color.MidnightBlue;
                         });
                         DelegateThisShit(label_base, "EE Base Address = 0x" + BaseAddress.ToString("X"));
                         break;
@@ -901,6 +595,7 @@ namespace slurky
                     {
                         Application.Restart();
                     }
+                    
                     GetSetActiveCharacter();
                     //FillWarpLocations(1);
                     UInt64 loadstate = GetGlobalValue(GlobalAddresses.Loading);
@@ -911,6 +606,7 @@ namespace slurky
                     if (CanFillWarps && loadstate == 3)
                     {
                         FillWarpLocations(GetGlobalValue(GlobalAddresses.LevelID));
+                        //   moved this elsewhere   GetEntityList();
                         CanFillWarps = false;
                     }
 
@@ -928,6 +624,8 @@ namespace slurky
 
         void GetSetActiveCharacter()
         {
+            
+            
             tabControl1.Invoke((MethodInvoker)delegate
             {
                 if (tabControl1.SelectedIndex != 0) return;      //processor saver
@@ -1031,29 +729,10 @@ namespace slurky
                 });
             }
 
-            UInt64 help = 0x0;
             float tempX = 0, tempY = 0, tempZ = 0;
-            while (true)
-            {
-                float tempPos = GetActiveCharacterData(EntityStruct.TransformComponent, TransformComponent.Position + help);
-                help += 4;
-                if (help == 0x4)
-                {
-                    tempX = tempPos;
-                }
-                else if (help == 0x8)
-                {
-                    tempY = tempPos;
-                }
-                else
-                {
-                    tempZ = tempPos;
-                }
-                if (help > 0x8)
-                {
-                    break;
-                }
-            }
+            tempX = GetActiveCharacterData(EntityStruct.TransformComponent, TransformComponent.Position);
+            tempY = GetActiveCharacterData(EntityStruct.TransformComponent, TransformComponent.Position + 0x4);
+            tempZ = GetActiveCharacterData(EntityStruct.TransformComponent, TransformComponent.Position + 0x8);
 
             DelegateThisShit(actCoordX, tempX.ToString("f5"));
             DelegateThisShit(actCoordY, tempY.ToString("f5"));
@@ -1061,16 +740,34 @@ namespace slurky
 
             float tempScale = GetActiveCharacterData(EntityStruct.TransformComponent, TransformComponent.Scale);
             DelegateThisShit(actScale, tempScale.ToString("f5"));
-
-
-
-
-
         }
 
+        bool ValidateCharacter() // safety check to avoid sly 3 crashes on load
+        {
+            if(GetGlobalValue(GlobalAddresses.Loading) != 3)
+            {
+                Console.WriteLine("validate fail, load");
+                return false;
+            }
+            UInt64 actid = GetGlobalValue(GlobalAddresses.ActChar);
+            if (actid < 7) return false;
+            if (actid > 100) return false;
+            return true;
+        }
 
         void WarpSelectedCharacter(float x = 0, float y = 0, float z = 0, bool offsetting = false, float xoff = 0, float yoff = 0, float zoff = 0, bool resetCam = true)
         {
+            //if (!ValidateCharacter()) return;
+
+            string tempColPtr = m.ReadUInt((BaseAddress + CurrentCharStruct).ToString("X") + "," + (BaseAddress + EntityStruct.ColliderPtr).ToString("X")).ToString();
+            if (Convert.ToInt64(tempColPtr) == 0x0) 
+            {
+                MessageBox.Show("Collider pointer missing. Risk of permanent loss of collider.", "Collider Pointer Fail", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return; 
+            }
+            Console.WriteLine(tempColPtr);
+            m.WriteMemory((BaseAddress + CurrentCharStruct).ToString("X") + "," + (BaseAddress + EntityStruct.ColliderPtr).ToString("X"), "int", "0");
+            Thread.Sleep(10);
             if (offsetting)
             {
                 float currX = m.ReadFloat((BaseAddress + CurrentCharStruct).ToString("X") + "," + (BaseAddress + EntityStruct.TransformComponent).ToString("X") + "," + (BaseAddress + TransformComponent.Position).ToString("X"));
@@ -1082,13 +779,26 @@ namespace slurky
                 y = currY + yoff;
                 z = currZ + zoff;
             }
+
+
             m.WriteMemory((BaseAddress + CurrentCharStruct).ToString("X") + "," + (BaseAddress + EntityStruct.TransformComponent).ToString("X") + "," + (BaseAddress + TransformComponent.Position).ToString("X"), type: "float", write: x.ToString("f3"));
             m.WriteMemory((BaseAddress + CurrentCharStruct).ToString("X") + "," + (BaseAddress + EntityStruct.TransformComponent).ToString("X") + "," + (BaseAddress + TransformComponent.Position + 0x4).ToString("X"), type: "float", write: y.ToString("f3"));
             m.WriteMemory((BaseAddress + CurrentCharStruct).ToString("X") + "," + (BaseAddress + EntityStruct.TransformComponent).ToString("X") + "," + (BaseAddress + TransformComponent.Position + 0x8).ToString("X"), type: "float", write: z.ToString("f3"));
-
+            Thread.Sleep(10);
             SetActiveCharacterData(offset: EntityStruct.TransformComponent, offset2: TransformComponent.Warp0, setTo: "2", writeType: "int");
-            if (resetCam) SetGlobalValue(GlobalAddresses.ResetCamera, "int", "1");    //  reset cam when warpin
-
+            if(resetCam)
+            {
+                if(CurrentBuild.StartsWith("Sly 2"))
+                {
+                    SetGlobalValue(GlobalAddresses.ResetCamera, "int", "1");
+                }
+                else
+                {
+                    m.WriteMemory((BaseAddress + CameraStuff.Cam0Ptr).ToString("X") + "," + (BaseAddress + CameraStuff.CamReset).ToString("X"), "int", "1");
+                }
+            }
+            m.WriteMemory((BaseAddress + CurrentCharStruct).ToString("X") + "," + (BaseAddress + EntityStruct.ColliderPtr).ToString("X"), "int", tempColPtr); //re enable col ptr
+            
         }
         UInt64 GetGlobalValue(UInt64 offset)
         {
@@ -1113,7 +823,7 @@ namespace slurky
 
         UInt64 GetActiveCharacterInt(UInt64 offset, UInt64 offset2)
         {
-            if(GetGlobalValue(GlobalAddresses.Loading) != 3) return 0;
+            if (!ValidateCharacter()) return 0;
             UInt64 temp = 0; // weird crash
             temp = m.ReadUInt((BaseAddress + CurrentCharStruct).ToString("X") + "," + (BaseAddress + offset).ToString("X") + "," + (BaseAddress + offset2).ToString("X"));
             return temp;
@@ -1175,7 +885,7 @@ namespace slurky
             }
         }
 
-        public void CurrentProcessBaseFinder()      //luminar method
+        public void CurrentProcessBaseFinder()      //luminar's method
         {
             if (!GoodBase)
             {
@@ -1312,6 +1022,818 @@ namespace slurky
         private void btn_reload_Click(object sender, EventArgs e)
         {
             SetGlobalValue(GlobalAddresses.Reload, "int", "1");
+        }
+
+        public void FillWarpLocations(UInt64 id)
+        {
+            cb_warps.Invoke((MethodInvoker)delegate
+            {
+                cb_warps.Items.Clear();
+            });
+            List<string> list = new List<string>();
+            string nametouse = "N/A";
+
+            if (id == 0)
+            {
+                if (CurrentBuild.StartsWith("Sly 2"))//cairo
+                {
+                    nametouse = "Cairo Museum";
+                    list.Add("Spawn");
+                    list.Add("Balcony 1");
+                    list.Add("Balcony 2");
+                    list.Add("Murray Rendezvous");
+                    list.Add("Warehouse");
+                    list.Add("Chase Start");
+                    list.Add("Pickup Point");
+                }
+                else if (CurrentBuild.StartsWith("Sly 3"))//dvd
+                {
+                    nametouse = "DVD Menu";
+                }
+            }
+            else if (id == 1)
+            {
+                if (CurrentBuild.StartsWith("Sly 2"))//dvd
+                {
+                    nametouse = "DVD Menu";
+                }
+                else if (CurrentBuild.StartsWith("Sly 3"))//e3
+                {
+                    nametouse = "Sampler Menu";
+                }
+            }
+            else if (id == 2)
+            {
+                if (CurrentBuild.StartsWith("Sly 2"))//paris hub
+                {
+                    nametouse = "Paris Hub";
+                    list.Add("Safehouse");
+                    list.Add("Safehouse (Top)");
+                    list.Add("Nightclub (Door)");
+                    list.Add("Nightclub (Window)");
+                    list.Add("Nightclub (Top)");
+                    list.Add("Dimitri's Boat");
+                    list.Add("Courtyard");
+                    list.Add("Tower");
+                    list.Add("Hotel");
+                }
+                else if (CurrentBuild.StartsWith("Sly 3"))//hazard
+                {
+                    nametouse = "Hazard Room";
+                    list.Add("Center");
+                    list.Add("Top");
+                    list.Add("Safehouse");
+                }
+            }
+            else if (id == 3)
+            {
+                if (CurrentBuild.StartsWith("Sly 2"))//wine cellar
+                {
+                    nametouse = "Wine Cellar";
+                    list.Add("Entrance");
+                    list.Add("Lasers");
+                    list.Add("Office");
+                    list.Add("Music Room");
+                }
+                else if (CurrentBuild.StartsWith("Sly 3"))//venice hub
+                {
+                    nametouse = "Venice Hub";
+                    list.Add("Safehouse");
+                    list.Add("Safehouse (Top)");
+                    list.Add("Police HQ");
+                    list.Add("Ferris Wheel");
+                    list.Add("Stage");
+                    list.Add("Fountain");
+                    list.Add("Aquarium");
+                }
+            }
+            else if (id == 4)
+            {
+                if (CurrentBuild.StartsWith("Sly 2"))//nightclub
+                {
+                    nametouse = "Nightclub";
+                    list.Add("Entrance (Door)");
+                    list.Add("Entrance (Window)");
+                    list.Add("Dancefloor");
+                    list.Add("Dimitri's Office");
+                }
+                else if (CurrentBuild.StartsWith("Sly 3"))//canal
+                {
+                    nametouse = "Canals";
+                    list.Add("Boat");
+                    list.Add("Intersection 1");
+                    list.Add("Intersection 2");
+                }
+            }
+            else if (id == 5)
+            {
+                if (CurrentBuild.StartsWith("Sly 2"))//print room
+                {
+                    nametouse = "Print Room";
+                    list.Add("Entrance (Recon)");
+                    list.Add("Bottom Floor");
+                    list.Add("Money Printer");
+                    list.Add("Top Floor");
+                }
+                else if (CurrentBuild.StartsWith("Sly 3"))//coffeehouses
+                {
+                    nametouse = "Coffeehouses";
+                    list.Add("Entrance 1");
+                    list.Add("Entrance 2");
+                    list.Add("Entrance 3");
+                    list.Add("Safe 1");
+                    list.Add("Safe 2");
+                    list.Add("Safe 3");
+                    list.Add("'Roof'");
+                }
+            }
+            else if (id == 6)
+            {
+                if (CurrentBuild.StartsWith("Sly 2"))//theater
+                {
+                    nametouse = "Theater";
+                    list.Add("Entrance");
+                    list.Add("Fan Control");
+                    list.Add("ZzZzZz (TV Guard)");
+                    list.Add("Spotlight Control");
+                }
+                else if (CurrentBuild.StartsWith("Sly 3"))//opera gauntlet
+                {
+                    nametouse = "Opera House";
+                    list.Add("Main Entrance");
+                    list.Add("Basement Entrance");
+                    list.Add("Pump Room");
+                    list.Add("Worlitzer-700");
+                    list.Add("Underground Canal");
+                    list.Add("Overlook");
+                }
+            }
+            else if (id == 7)
+            {
+                if (CurrentBuild.StartsWith("Sly 2"))//aqua
+                {
+                    nametouse = "Aqua Pump Room";
+                    list.Add("Entrance");
+                    list.Add("Fireplace");
+                    list.Add("Aqua Pump");
+                }
+                else if (CurrentBuild.StartsWith("Sly 3"))//police hq
+                {
+                    nametouse = "Police Headquarters";
+                    list.Add("Dimitri's Cell");
+                    list.Add("Cell Key");
+                }
+            }
+            else if (id == 8)
+            {
+                if (CurrentBuild.StartsWith("Sly 2"))//india hub
+                {
+                    nametouse = "India Palace Hub";
+                    list.Add("Safehouse");
+                    list.Add("Safehouse (Inside)");
+                    list.Add("Palace (Door)");
+                    list.Add("Guesthouse (Top)");
+                    list.Add("Cobra Statue");
+                    list.Add("Drain Pipe (Basement Entrance)");
+                    list.Add("Drawbridge Control");
+                }
+                else if (CurrentBuild.StartsWith("Sly 3"))//australia hub
+                {
+                    nametouse = "Outback Hub";
+                    list.Add("Safehouse");
+                    list.Add("Safehouse (Top)");
+                    list.Add("Crane");
+                    list.Add("Truck");
+                    list.Add("Guru's Hut");
+                    list.Add("Guru's Cell");
+                    list.Add("Treeline");
+                    list.Add("Plateau");
+                }
+            }
+            else if (id == 9)
+            {
+                if (CurrentBuild.StartsWith("Sly 2"))//guesthouse
+                {
+                    nametouse = "Guesthouse";
+                    list.Add("Entrance");
+                    list.Add("Room 101");
+                    list.Add("Room 102");
+                    list.Add("Room 103");
+                    list.Add("Room 104");
+                    list.Add("Room 105");
+                }
+                else if (CurrentBuild.StartsWith("Sly 3"))//ayers rock
+                {
+                    nametouse = "Ayers Rock";
+                    list.Add("Drill Controls");
+                    list.Add("Drill Controls (Top)");
+                    list.Add("Truck Spawn");
+                    list.Add("Mine Entrance");
+                    list.Add("Clifftop");
+                }
+            }
+            else if (id == 10)
+            {
+                if (CurrentBuild.StartsWith("Sly 2"))//palace basement
+                {
+                    nametouse = "Palace Basement";
+                    list.Add("Entrance");
+                    list.Add("Vault");
+                    list.Add("Boardroom");
+                }
+                else if (CurrentBuild.StartsWith("Sly 3"))//Oilfield
+                {
+                    nametouse = "Oil Field";
+                    list.Add("The Claw");
+                    list.Add("Catapult");
+                    list.Add("Drill Platform");
+                }
+            }
+            else if (id == 11)
+            {
+                if (CurrentBuild.StartsWith("Sly 2"))//ballroom
+                {
+                    nametouse = "Ballroom";
+                    list.Add("Entrance");
+                    list.Add("Dance Floor");
+                    list.Add("Guests (Left)");
+                    list.Add("Guests (Right)");
+
+                }
+                else if (CurrentBuild.StartsWith("Sly 3"))//cave moonstone
+                {
+                    nametouse = "Moonstone Cave";
+                    list.Add("Entrance");
+                    list.Add("Safe");
+                    list.Add("Drills");
+                }
+            }
+            else if (id == 12)
+            {
+                if (CurrentBuild.StartsWith("Sly 2"))//india2 hub
+                {
+                    nametouse = "India Jungle Hub";
+                    list.Add("Safehouse");
+                    list.Add("Safehouse (Top)");
+                    list.Add("Tilting Temple");
+                    list.Add("Temple Entrance");
+                    list.Add("Waterfall");
+                    list.Add("Top of Dam");
+                }
+                else if (CurrentBuild.StartsWith("Sly 3"))//cave staff
+                {
+                    nametouse = "Staff Cave";
+                    list.Add("Entrance");
+                    list.Add("Safe");
+                    list.Add("Hook Conveyor Belt");
+                }
+            }
+            else if (id == 13)
+            {
+                if (CurrentBuild.StartsWith("Sly 2"))//spice fac
+                {
+                    nametouse = "Spice Factory";
+                    list.Add("Factory Entrance");
+                    list.Add("Factory Entrance (Top)");
+                    list.Add("Factory Recon Area");
+                    list.Add("Spice Grinder");
+                    list.Add("Spice Grinder Entrance");
+                    list.Add("Rajan's Office");
+                }
+                else if (CurrentBuild.StartsWith("Sly 3"))//lemonade
+                {
+                    nametouse = "Lemonade Bar";
+                }
+            }
+            else if (id == 14)
+            {
+                if (CurrentBuild.StartsWith("Sly 2"))//prague 1
+                {
+                    nametouse = "Prague Jail Hub";
+                    list.Add("Safehouse");
+                    list.Add("Safehouse (Top)");
+                    list.Add("Bridge");
+                    list.Add("Prison (Center)");
+                    list.Add("Prison (Sly)");
+                    list.Add("Rooftop 1");
+                    list.Add("Rooftop 2");
+                    list.Add("Weird House");
+                }
+                else if (CurrentBuild.StartsWith("Sly 3"))//cave mur
+                {
+                    nametouse = "Spelunking Cave";
+                    list.Add("Entrance");
+                    list.Add("Piston");
+                    list.Add("Triple Piston");
+                    list.Add("Drilling Area");
+                }
+            }
+            else if (id == 15)
+            {
+                if (CurrentBuild.StartsWith("Sly 2"))//prague 1 jail
+                {
+                    nametouse = "Jail";
+                    list.Add("Entrance");
+                    list.Add("Murray's Cell");
+                    list.Add("Hypno Arena");
+                    list.Add("Control Room");
+
+                }
+                else if (CurrentBuild.StartsWith("Sly 3"))//holland hub
+                {
+                    nametouse = "Holland Hub";
+                    list.Add("Safehouse");
+                    list.Add("Baron's Hangar");
+                    list.Add("Ramp");
+                    list.Add("Forest");
+                    list.Add("Barn");
+                    list.Add("Well");
+                }
+            }
+            else if (id == 16)
+            {
+                if (CurrentBuild.StartsWith("Sly 2"))//vault room weird lights
+                {
+                    nametouse = "Scuffed Vault Room";
+                    list.Add("Entrance");
+                    list.Add("Behind the Wall");
+                }
+                else if (CurrentBuild.StartsWith("Sly 3"))//hotel
+                {
+                    nametouse = "Hotel";
+                    list.Add("'Safehouse Entrance'");
+                    list.Add("Ham");
+                    list.Add("Viking Helmet");
+                    list.Add("'Outside'");
+                }
+            }
+            else if (id == 17)
+            {
+                if (CurrentBuild.StartsWith("Sly 2"))//prague 2
+                {
+                    nametouse = "Prague Fortress Hub";
+                    list.Add("Safehouse");
+                    list.Add("Sewer");
+                    list.Add("Graveyard");
+                    list.Add("Castle Top 1");
+                    list.Add("Castle Top 2");
+                    list.Add("Castle Top 3");
+                    list.Add("Guillotine");
+                    list.Add("Re-education Tower (Entrance)");
+                    list.Add("Re-education Tower (Balcony)");
+                }
+                else if (CurrentBuild.StartsWith("Sly 3"))
+                {
+                    nametouse = "Hangar (Team Iceland)";
+                }
+            }
+            else if (id == 18)
+            {
+                if (CurrentBuild.StartsWith("Sly 2"))//prague 2
+                {
+                    nametouse = "Monaco Hub";
+                }
+                else if (CurrentBuild.StartsWith("Sly 3"))
+                {
+                    nametouse = "Black Baron's Hangar";
+                }
+            }
+            else if (id == 19)
+            {
+                if (CurrentBuild.StartsWith("Sly 2"))//crypt3
+                {
+                    nametouse = "Crypt 3";
+                    list.Add("Entrance");
+                    list.Add("End");
+                }
+                else if (CurrentBuild.StartsWith("Sly 3"))//cooper hangar
+                {
+                    nametouse = "Hangar (Team Cooper)";
+                    list.Add("Center");
+                    list.Add("Control Room");
+                    list.Add("Truck");
+                }
+            }
+            else if (id == 20)
+            {
+                if (CurrentBuild.StartsWith("Sly 2"))//crypt12
+                {
+                    nametouse = "Crypts 1 + 2";
+                    list.Add("Entrance (Crypt 1)");
+                    list.Add("Vault (Crypt 1)");
+                    list.Add("Entrance (Crypt 2)");
+                    list.Add("End (Crypt 2)");
+                }
+                else if (CurrentBuild.StartsWith("Sly 3"))//sew
+                {
+                    nametouse = "Sewer";
+                    list.Add("Entrance");
+                    list.Add("Iceland Hotel Path");
+                    list.Add("Exit to Surface");
+                    list.Add("Iceland Hotel Entrance");
+                }
+            }
+            else if (id == 21)
+            {
+                if (CurrentBuild.StartsWith("Sly 2"))//crypt ghost cap
+                {
+                    nametouse = "Ghost Capture Crypt";
+                    list.Add("Entrance");
+                    list.Add("Tomb");
+                }
+                else if (CurrentBuild.StartsWith("Sly 3"))
+                {
+                    nametouse = "Biplane Battlefield";
+                    list.Add("Barn");
+                    list.Add("Crop Squares");
+                    list.Add("Bridge 1");
+                    list.Add("Bridge 2");
+                    list.Add("Bridge 3");
+                    list.Add("Boss Arena");
+                }
+            }
+            else if (id == 22)
+            {
+                if (CurrentBuild.StartsWith("Sly 2"))//re edu
+                {
+                    nametouse = "Re.education Tower / Crypt Hack";
+                    list.Add("Entrance (Re-education Tower)");
+                    list.Add("Re-education Cell");
+                    list.Add("Entrance (Hack)");
+                    list.Add("End (Hack)");
+                    list.Add("Unused Area 1");
+                    list.Add("Unused Area 2");
+                    list.Add("Unused Area 3");
+                }
+                else if (CurrentBuild.StartsWith("Sly 3"))
+                {
+                    nametouse = "Hackathon";
+                }
+            }
+            else if (id == 23)
+            {
+                if (CurrentBuild.StartsWith("Sly 2"))//mojo1
+                {
+                    nametouse = "Mojo Crypt 1";
+                }
+                else if (CurrentBuild.StartsWith("Sly 3"))
+                {
+                    nametouse = "China Hub";
+                    list.Add("Safehouse");
+                    list.Add("Turret Tower");
+                    list.Add("Walk Across the Heavens");
+                    list.Add("Graveyard");
+                    list.Add("Statue");
+                    list.Add("Palace");
+                }
+            }
+            else if (id == 24)
+            {
+                if (CurrentBuild.StartsWith("Sly 2"))//mojo3
+                {
+                    nametouse = "Mojo Crypt 3";
+                }
+                else if (CurrentBuild.StartsWith("Sly 3"))
+                {
+                    nametouse = "China Intro Mountains";
+                    list.Add("Start Platform");
+                    list.Add("Panda King's Perch");
+                    list.Add("House");
+                    list.Add("Clifftop");
+                }
+            }
+            else if (id == 25)
+            {
+                if (CurrentBuild.StartsWith("Sly 2"))//mojo2
+                {
+                    nametouse = "Mojo Crypt 2";
+                }
+                else if (CurrentBuild.StartsWith("Sly 3"))
+                {
+                    nametouse = "Flashback Arena";
+                }
+            }
+            else if (id == 26)
+            {
+                if (CurrentBuild.StartsWith("Sly 2"))//mojo4
+                {
+                    nametouse = "Mojo Crypt 4";
+                }
+                else if (CurrentBuild.StartsWith("Sly 3"))
+                {
+                    nametouse = "Tsao's Battleground";
+                    list.Add("Entrance Platform");
+                    list.Add("Ground Level");
+                    list.Add("Overlook");
+                }
+            }
+            else if (id == 27)
+            {
+                if (CurrentBuild.StartsWith("Sly 2"))//canada hub
+                {
+                    nametouse = "Canada 1 Hub";
+                    list.Add("Safehouse");
+                    list.Add("Safehouse (Top)");
+                    list.Add("Cabin 1");
+                    list.Add("Cabin 2");
+                    list.Add("Cabin 3");
+                    list.Add("Satellite Dish");
+                    list.Add("Plane");
+                }
+                else if (CurrentBuild.StartsWith("Sly 3"))
+                {
+                    nametouse = "Panda King's Apartment";
+                    list.Add("Yang");
+                    list.Add("Yin");
+                }
+            }
+            else if (id == 28)
+            {
+                if (CurrentBuild.StartsWith("Sly 2"))//cabins
+                {
+                    nametouse = "Cabins";
+                    list.Add("Cabin 1");
+                    list.Add("Cabin 2");
+                    list.Add("Cabin 3");
+                }
+                else if (CurrentBuild.StartsWith("Sly 3"))
+                {
+                    nametouse = "Hall A (Grapplecam)";
+                    list.Add("Laser Wall");
+                    list.Add("Second Floor");
+                    list.Add("Computer");
+                    list.Add("'Outside'");
+                    list.Add("Overlook");
+                }
+            }
+            else if (id == 29)
+            {
+                if (CurrentBuild.StartsWith("Sly 2"))//train aerial theft
+                {
+                    nametouse = "Train (Aerial Ass. / Theft on Rails)";
+                    list.Add("Back");
+                    list.Add("Front");
+                }
+                else if (CurrentBuild.StartsWith("Sly 3"))
+                {
+                    nametouse = "Hall B (Palace)";
+                    list.Add("Vases");
+                    list.Add("Computer");
+                    list.Add("Jing King's Room");
+                    list.Add("Drill Site");
+                }
+            }
+            else if (id == 30)
+            {
+                if (CurrentBuild.StartsWith("Sly 2"))//train op
+                {
+                    nametouse = "Train (Operation)";
+                    list.Add("Back");
+                    list.Add("Front");
+                    list.Add("Jean Bison");
+                }
+                else if (CurrentBuild.StartsWith("Sly 3"))
+                {
+                    nametouse = "Treasure Temple";
+                    list.Add("Entrance");
+                    list.Add("Treasure Area");
+                    list.Add("Crawlspace");
+                }
+            }
+            else if (id == 31)
+            {
+                if (CurrentBuild.StartsWith("Sly 2"))//train iron horse
+                {
+                    nametouse = "Train (Iron Horse)";
+                    list.Add("Back");
+                    list.Add("Front");
+                }
+                else if (CurrentBuild.StartsWith("Sly 3"))
+                {
+                    nametouse = "Bloodbath Bay Hub";
+                    list.Add("Safehouse");
+                    list.Add("Safehouse (Top)");
+                    list.Add("Skull Keep (Top)");
+                    list.Add("Waterfall (Top)");
+                    list.Add("Fireplace");
+                    list.Add("Monkeys?");
+                    list.Add("Cooper Gang Ship");
+                    list.Add("Archipelago");
+                }
+            }
+            else if (id == 32)
+            {
+                if (CurrentBuild.StartsWith("Sly 2"))//canada 2
+                {
+                    nametouse = "Canada 2 Hub";
+                    list.Add("Safehouse");
+                    list.Add("Van");
+                    list.Add("Sawmill 1");
+                    list.Add("Sawmill 2");
+                    list.Add("Sawmill 3 / RC Combat Club");
+                    list.Add("Bomb Fishing Spot");
+                    list.Add("Battery Silo");
+                    list.Add("Lighthouse");
+                    list.Add("Lighthouse (Top)");
+                }
+                else if (CurrentBuild.StartsWith("Sly 3"))
+                {
+                }
+            }
+            else if (id == 33)
+            {
+                if (CurrentBuild.StartsWith("Sly 2"))//rc comb
+                {
+                    nametouse = "RC Combat Club";
+                    list.Add("Moose Head");
+                    list.Add("Sawblade Crawl");
+                }
+                else if (CurrentBuild.StartsWith("Sly 3"))
+                {
+                    nametouse = "Underwater Shipwreck";
+                    list.Add("Spawn");
+                    list.Add("Ship (Top)");
+                    list.Add("Shipwreck");
+                    list.Add("Depths");
+                    list.Add("Ocean Current");
+                }
+            }
+            else if (id == 34)
+            {
+                if (CurrentBuild.StartsWith("Sly 2"))//sawmill
+                {
+                    nametouse = "Sawmill";
+                    list.Add("Vault");
+                    list.Add("Lasers");
+                    list.Add("Lever");
+                }
+                else if (CurrentBuild.StartsWith("Sly 3"))
+                {
+                    nametouse = "Dagger Island";
+                    list.Add("Cooper Gang Ship");
+                    list.Add("Palm Tree Circle");
+                    list.Add("Flipped Ship");
+                    list.Add("Pirate Ship");
+                    list.Add("Mountain Peak");
+                }
+            }
+            else if (id == 35)
+            {
+                if (CurrentBuild.StartsWith("Sly 2"))//lighthouse
+                {
+                    nametouse = "Lighthouse";
+                    list.Add("Top Entrance");
+                    list.Add("Bottom");
+                    list.Add("Recon");
+                }
+                else if (CurrentBuild.StartsWith("Sly 3"))
+                {
+                    nametouse = "Kaine Island";
+                    list.Add("Spawn");
+                    list.Add("Wall Sneak (Top)");
+                    list.Add("Ventilation Shaft");
+                    list.Add("Vault Entrance");
+                    list.Add("Ship Dock");
+                    list.Add("Cooper Gang Ship");
+                    list.Add("RC Car Track");
+                    list.Add("Random Rope");
+                    list.Add("Rock Formation");
+                }
+            }
+            else if (id == 36)
+            {
+                if (CurrentBuild.StartsWith("Sly 2"))//bearcave
+                {
+                    nametouse = "Bear Cave";
+                    list.Add("Entrance");
+                    list.Add("Large Ice Wall");
+                }
+                else if (CurrentBuild.StartsWith("Sly 3"))
+                {
+                    nametouse = "Underwater";
+                    list.Add("Spawn");
+                    list.Add("Water Tube");
+                    list.Add("Boss Area");
+                }
+            }
+            else if (id == 37)
+            {
+                if (CurrentBuild.StartsWith("Sly 2"))//saw boss
+                {
+                    nametouse = "Sawmill (Boss)";
+                    list.Add("Arena");
+                    list.Add("Control Room");
+                }
+                else if (CurrentBuild.StartsWith("Sly 3"))
+                {
+                    nametouse = "Vault (Entrance)";
+                    list.Add("Center");
+                    list.Add("Entrance Door");
+                }
+            }
+            else if (id == 38)
+            {
+                if (CurrentBuild.StartsWith("Sly 2"))//blimp
+                {
+                    nametouse = "Blimp Hub";
+                    list.Add("Safehouse");
+                    list.Add("Safehouse (Top)");
+                    list.Add("Balloon 1");
+                    list.Add("Balloon 2");
+                    list.Add("Engine 1");
+                    list.Add("Engine 2");
+                    list.Add("Center");
+                }
+                else if (CurrentBuild.StartsWith("Sly 3"))
+                {
+                    nametouse = "Vault (Gauntlet)";
+                    list.Add("Slytunkhamen II");
+                    list.Add("Sir Galleth Cooper");
+                    list.Add("Salim Al-Kupar");
+                    list.Add("Slaigh MacCooper");
+                    list.Add("Rioichi Cooper");
+                    list.Add("Henriette Cooper");
+                    list.Add("Tennesee 'Kid' Cooper");
+                    list.Add("Thaddeus Winslow Cooper III");
+                    list.Add("Otto Van Cooper");
+                    list.Add("Conner Cooper");
+                    list.Add("Inner Sanctum Entrance");
+                }
+            }
+            else if (id == 39)
+            {
+                if (CurrentBuild.StartsWith("Sly 2"))//blimp HQ
+                {
+                    nametouse = "Blimp Headquarters";
+                    list.Add("Entrance");
+                    list.Add("Clockwerk");
+                    list.Add("Center");
+                    list.Add("Neyla");
+                }
+                else if (CurrentBuild.StartsWith("Sly 3"))
+                {
+                    nametouse = "Vault (Inner Sanctum)";
+                    list.Add("Center");
+                    list.Add("Top Platform");
+                }
+            }
+            else if (id == 40)
+            {
+                if (CurrentBuild.StartsWith("Sly 2"))//engine b m
+                {
+                    nametouse = "Engine Room (Bentley + Murray)";
+                    list.Add("Entrance");
+                    list.Add("Control Room");
+                }
+                else if (CurrentBuild.StartsWith("Sly 3"))
+                {
+                }
+            }
+            else if (id == 41)
+            {
+                if (CurrentBuild.StartsWith("Sly 2"))//engine s b
+                {
+                    nametouse = "Engine Room (Sly + Bentley)";
+                    list.Add("Entrance");
+                    list.Add("Control Room");
+                }
+                else if (CurrentBuild.StartsWith("Sly 3"))
+                {
+                }
+            }
+            else if (id == 42)
+            {
+                if (CurrentBuild.StartsWith("Sly 2"))//engine m s
+                {
+                    nametouse = "Engine Room (Murray + Sly)";
+                    list.Add("Entrance");
+                    list.Add("Control Room");
+                }
+                else if (CurrentBuild.StartsWith("Sly 3"))
+                {
+                }
+            }
+            else if (id == 43)
+            {
+                if (CurrentBuild.StartsWith("Sly 2"))//paris wreckage
+                {
+                    nametouse = "Paris (Clock-la)";
+                    list.Add("Spawn (Sky)");
+                    list.Add("Clock-la (Sky)");
+                    list.Add("Ground Level");
+                    list.Add("Destroyed Walkway");
+                }
+                else if (CurrentBuild.StartsWith("Sly 3"))
+                {
+                }
+            }
+
+            list.Sort();    //alphabetical
+            cb_warps.Invoke((MethodInvoker)delegate
+            {
+                foreach (string s in list) cb_warps.Items.Add(s);
+            });
+            DelegateThisShit(label_curlev, nametouse);
         }
 
         private void btn_warp_Click(object sender, EventArgs e)
@@ -1701,10 +2223,278 @@ namespace slurky
                                 x = 13330; y = -7390; z = -380; break;
                         }
                     }
+                    else if (mapid == 27) //canada 1
+                    {
+                        switch (txt)
+                        {
+                            default:
+                                break;
+                            case "Safehouse":
+                                x = -1060; y = -11040; z = 30; break;
+                            case "Safehouse (Top)":
+                                x = -50; y = -10560; z = 1440; break;
+                            case "Cabin 1":
+                                x = -12220; y = -3630; z = 1960; break;
+                            case "Cabin 2":
+                                x = -3940; y = 6870; z = 2030; break;
+                            case "Cabin 3":
+                                x = 5960; y = 6275; z = 890; break;
+                            case "Satellite Dish":
+                                x = 660; y = 5330; z = 4740; break;
+                            case "Plane":
+                                x = -1840; y = 9260; z = 20; break;
+                        }
+                    }
+                    else if (mapid == 28) //cabins
+                    {
+                        switch (txt)
+                        {
+                            default:
+                                break;
+                            case "Cabin 1":
+                                x = -8820; y = -8470; z = 130; break;
+                            case "Cabin 2":
+                                x = 8370; y = -8500; z = 130; break;
+                            case "Cabin 3":
+                                x = 8370; y = 6260; z = 130; break;
+                        }
+                    }
+                    else if (mapid == 29) //train ass
+                    {
+                        switch (txt)
+                        {
+                            default:
+                                break;
+                            case "Back":
+                                x = 0; y = -8400; z = 120; break;
+                            case "Front":
+                                x = 40; y = 21300; z = 120; break;
+                        }
+                    }
+                    else if (mapid == 30) //train op
+                    {
+                        switch (txt)
+                        {
+                            default:
+                                break;
+                            case "Back":
+                                x = 0; y = -8400; z = 120; break;
+                            case "Front":
+                                x = 0; y = 25100; z = 120; break;
+                            case "Jean Bison":
+                                x = 0; y = 2380; z = 120; break;
+                        }
+                    }
+                    else if (mapid == 31) //train iron horse
+                    {
+                        switch (txt)
+                        {
+                            default:
+                                break;
+                            case "Back":
+                                x = 0; y = -8400; z = 120; break;
+                            case "Front":
+                                x = 0; y = 25100; z = 120; break;
+                        }
+                    }
+                    else if (mapid == 32) //canada 2
+                    {
+                        switch (txt)
+                        {
+                            default:
+                                break;
+                            case "Safehouse":
+                                x = 2290; y = -3380; z = 560; break;
+                            case "Van":
+                                x = 8420; y = -970; z = -810; break;
+                            case "Sawmill 1":
+                                x = 520; y = 7270; z = 1825; break;
+                            case "Sawmill 2":
+                                x = -5140; y = 7200; z = 1470; break;
+                            case "Sawmill 3 / RC Combat Club":
+                                x = -5700; y = -6390; z = 1480; break;
+                            case "Bomb Fishing Spot":
+                                x = -4670; y = -1190; z = 920; break;
+                            case "Battery Silo":
+                                x = -9480; y = -3050; z = 1490; break;
+                            case "Lighthouse":
+                                x = -12750; y = -3500; z = -330; break;
+                            case "Lighthouse (Top)":
+                                x = -13700; y = -3850; z = 4060; break;
+                        }
+                    }
+                    else if (mapid == 33) //rc combat
+                    {
+                        switch (txt)
+                        {
+                            default:
+                                break;
+                            case "Moose Head":
+                                x = 19390; y = -1080; z = 1720; break;
+                            case "Sawblade Crawl":
+                                x = 22040; y = -2520; z = 1470; break;
+                        }
+                    }
+                    else if (mapid == 34) //sawmill
+                    {
+                        switch (txt)
+                        {
+                            default:
+                                break;
+                            case "Vault":
+                                x = 760; y = 20930; z = 880; break;
+                            case "Lasers":
+                                x = -268; y = 20348; z = 1828; break;
+                            case "Lever":
+                                x = 690; y = 22320; z = 1190; break;
+                        }
+                    }
+                    else if (mapid == 35) //lighthouse
+                    {
+                        switch (txt)
+                        {
+                            default:
+                                break;
+                            case "Top Entrance":
+                                x = -290; y = 375; z = 5845; break;
+                            case "Bottom":
+                                x = 0; y = 0; z = 960; break;
+                            case "Recon":
+                                x = 680; y = 1060; z = 1015; break;
+                        }
+                    }
+                    else if (mapid == 36) //bear
+                    {
+                        switch (txt)
+                        {
+                            default:
+                                break;
+                            case "Entrance":
+                                x = -2525; y = 2960; z = 30; break;
+                            case "Large Ice Wall":
+                                x = 1000; y = 5255; z = 165; break;
+                        }
+                    }
+                    else if (mapid == 37) //sawmill boss
+                    {
+                        switch (txt)
+                        {
+                            default:
+                                break;
+                            case "Arena":
+                                x =1140; y = -520; z = 75; break;
+                            case "Control Room":
+                                x = 620; y = 840; z = 1800; break;
+                        }
+                    }
+                    else if (mapid == 38) //blimp
+                    {
+                        switch (txt)
+                        {
+                            default:
+                                break;
+                            case "Safehouse":
+                                x = 11400; y = -25; z = 960; break;
+                            case "Safehouse (Top)":
+                                x = 10840; y = -485; z = 3100; break;
+                            case "Balloon 1":
+                                x = 6540; y = -2710; z = 2360; break;
+                            case "Balloon 2":
+                                x = 6480; y = 2690; z = 2360; break;
+                            case "Engine 1":
+                                x = -10220; y = 4055; z = 3960; break;
+                            case "Engine 2":
+                                x = -10270; y = -4060; z = 3960; break;
+                            case "Center":
+                                x = 0; y = 0; z = 2810; break;
+                        }
+                    }
+                    else if (mapid == 39) //blimp hq
+                    {
+                        switch (txt)
+                        {
+                            default:
+                                break;
+                            case "Entrance":
+                                x = -3890; y = 0; z = 730; break;
+                            case "Clockwerk":
+                                x = 135; y = 0; z = 360; break;
+                            case "Neyla":
+                                x = 5160; y = 0; z = 100; break;
+                            case "Center":
+                                x = 0; y = 0; z = -670; break;
+                        }
+                    }
+                    else if (mapid == 40) //engine room
+                    {
+                        switch (txt)
+                        {
+                            default:
+                                break;
+                            case "Entrance":
+                                x = -2190; y = 130; z = 10; break;
+                            case "Control Room":
+                                x = -2250; y = -20; z = 710; break;
+                        }
+                    }
+                    else if (mapid == 41) //engine room
+                    {
+                        switch (txt)
+                        {
+                            default:
+                                break;
+                            case "Entrance":
+                                x = -2140; y = 140; z = 10; break;
+                            case "Control Room":
+                                x = -2250; y = -20; z = 710; break;
+                        }
+                    }
+                    else if (mapid == 42) //engine room
+                    {
+                        switch (txt)
+                        {
+                            default:
+                                break;
+                            case "Entrance":
+                                x = -2110; y = 430; z = 10; break;
+                            case "Control Room":
+                                x = -2250; y = -85; z = 710; break;
+                        }
+                    }
+                    else if (mapid == 43) //paris wreckage
+                    {
+                        switch (txt)
+                        {
+                            default:
+                                break;
+                            case "Spawn (Sky)":
+                                x = -12560; y = 580; z = 86720; break;
+                            case "Clock-la (Sky)":
+                                x = 22803; y = -1340; z = 76170; break;
+                            case "Ground Level":
+                                x = -100; y = -666; z = -130; break;
+                            case "Destroyed Walkway":
+                                x = 920; y = -7480; z = 1580; break;
+                        }
+                    }
                 }
                 else if (CurrentBuild.StartsWith("Sly 3"))
                 {
-                    if (mapid == 3)  //venice
+                    if (mapid == 2)  //hazard
+                    {
+                        switch (txt)
+                        {
+                            default:
+                                break;
+                            case "Center":
+                                x = 3550; y = 440; z = 100; break;
+                            case "Top":
+                                x = 3580; y = 630; z = 3440; break;
+                            case "Safehouse":
+                                x = 6640; y = 680; z = 90; break;
+                        }
+                    }
+                    else if (mapid == 3)  //venice
                     {
                         switch (txt)
                         {
@@ -1716,6 +2506,82 @@ namespace slurky
                                 x = 863; y = -1420; z = 1266; break;
                             case "Police HQ":
                                 x = -7570; y = 1670; z = 1962; break;
+                            case "Ferris Wheel":
+                                x = 6900; y = 1480; z = 160; break;
+                            case "Stage":
+                                x = 6250; y = 8210; z = 260; break;
+                            case "Fountain":
+                                x = -6670; y = 8550; z = 700; break;
+                            case "Aquarium":
+                                x = 8040; y = -4365; z = 160; break;
+                        }
+                    }
+                    else if (mapid == 4)  //canals
+                    {
+                        switch (txt)
+                        {
+                            default:
+                                break;
+                            case "Boat":
+                                x = 0; y = 0; z = 130; break;
+                            case "Intersection 1":
+                                x = 665; y = -12555; z = 140; break;
+                            case "Intersection 2":
+                                x = 27250; y = 28580; z = 140; break;
+                        }
+                    }
+                    else if (mapid == 5)  //coffee
+                    {
+                        switch (txt)
+                        {
+                            default:
+                                break;
+                            case "Entrance 1":
+                                x = 710; y = -5000; z = 125; break;
+                            case "Entrance 2":
+                                x = 1070; y = 100; z = 125; break;
+                            case "Entrance 3":
+                                x = 1160; y = 5000; z = 125; break;
+                            case "Safe 1":
+                                x = -1710; y = -4990; z = 125; break;
+                            case "Safe 2":
+                                x = -1750; y = 10; z = 125; break;
+                            case "Safe 3":
+                                x = -3245; y = 4990; z = 125; break;
+                            case "'Roof'":
+                                x = -1780; y = -4540; z = 1175; break;
+                        }
+                    }
+                    else if (mapid == 6)  //opera gauntlet
+                    {
+                        switch (txt)
+                        {
+                            default:
+                                break;
+                            case "Main Entrance":
+                                x = -7130; y = -11340; z = 1030; break;
+                            case "Basement Entrance":
+                                x = 14440; y = -4000; z = 1015; break;
+                            case "Pump Room":
+                                x = -885; y = -2230; z = 180; break;
+                            case "Worlitzer-700":
+                                x = -2100; y = 4890; z = 630; break;
+                            case "Underground Canal":
+                                x = 8720; y = -6490; z = 75; break;
+                            case "Overlook":
+                                x = 8770; y = -5830; z = 1650; break;
+                        }
+                    }
+                    else if (mapid == 7)  //police hq
+                    {
+                        switch (txt)
+                        {
+                            default:
+                                break;
+                            case "Dimitri's Cell":
+                                x = -60; y = 7600; z = 120; break;
+                            case "Cell Key":
+                                x = -685; y = 3250; z = 125; break;
                         }
                     }
                     else if (mapid == 8) //aus
@@ -1732,12 +2598,448 @@ namespace slurky
                                 x = -700; y = -1290; z = 4320; break;
                             case "Truck":
                                 x = 9820; y = -550; z = 1240; break;
+                            case "Guru's Hut":
+                                x = -8230; y = 4365; z = 2760; break;
+                            case "Guru's Cell":
+                                x = 8665; y = 5620; z = 2820; break;
+                            case "Treeline":
+                                x = -8360; y = -3400; z = 5060; break;
+                            case "Plateau":
+                                x = 6360; y = 7645; z = 6930; break;
+                        }
+                    }
+                    else if (mapid == 9) //ayers
+                    {
+                        switch (txt)
+                        {
+                            default:
+                                break;
+                            case "Drill Controls":
+                                x = 270; y = 160; z = 240; break;
+                            case "Drill Controls (Top)":
+                                x = 420; y = 15; z = 2190; break;
+                            case "Truck Spawn":
+                                x = -16350; y = 8310; z = 4230; break;
+                            case "Mine Entrance":
+                                x = 3830; y = 13920; z = 70; break;
+                            case "Clifftop":
+                                x = 16260; y = 12890; z = 12660; break;
+                        }
+                    }
+                    else if (mapid == 10) //oilfield
+                    {
+                        switch (txt)
+                        {
+                            default:
+                                break;
+                            case "The Claw":
+                                x = 320; y = 10000; z = 70; break;
+                            case "Catapult":
+                                x = 4820; y = -4470; z = 70; break;
+                            case "Drill Platform":
+                                x = -360; y = 620; z = 1235; break;
+                        }
+                    }
+                    else if (mapid == 11) //cave moonst
+                    {
+                        switch (txt)
+                        {
+                            default:
+                                break;
+                            case "Entrance":
+                                x = -9345; y = 330; z = 20; break;
+                            case "Safe":
+                                x = 6545; y = 125; z = 1111; break;
+                            case "Drills":
+                                x = -780; y = -3420; z = 1120; break;
+                        }
+                    }
+                    else if (mapid == 12) //cave staff
+                    {
+                        switch (txt)
+                        {
+                            default:
+                                break;
+                            case "Entrance":
+                                x = -8945; y = 370; z = -1860; break;
+                            case "Safe":
+                                x = -100; y = -4960; z = -610; break;
+                            case "Hook Conveyor Belt":
+                                x = -5970; y = -1800; z = -1335; break;
+                        }
+                    }
+                    else if (mapid == 14) //cave spunky
+                    {
+                        switch (txt)
+                        {
+                            default:
+                                break;
+                            case "Entrance":
+                                x = -10230; y = -1445; z = -1140; break;
+                            case "Piston":
+                                x = 3380; y = -1870; z = -1020; break;
+                            case "Triple Piston":
+                                x = -2300; y = -8000; z = 150; break;
+                            case "Drilling Area":
+                                x = 200; y = -9200; z = 320; break;
+                        }
+                    }
+                    else if (mapid == 15) //holland hub
+                    {
+                        switch (txt)
+                        {
+                            default:
+                                break;
+                            case "Safehouse":
+                                x = 12180; y = -540; z = 1180; break;
+                            case "Baron's Hangar":
+                                x = -6075; y = 6950; z = 2855; break;
+                            case "Forest":
+                                x = -2770; y = 3020; z = 430; break;
+                            case "Ramp":
+                                x = -4645; y = -9100; z = 1680; break;
+                            case "Barn":
+                                x = 3680; y = -6000; z = 600; break;
+                            case "Well":
+                                x = 4330; y = 3490; z = 120; break;
+                        }
+                    }
+                    else if (mapid == 16) //holland hotel
+                    {
+                        switch (txt)
+                        {
+                            default:
+                                break;
+                            case "'Safehouse Entrance'":
+                                x = 2620; y = 280; z = 600; break;
+                            case "Ham":
+                                x = -535; y = 420; z = 0; break;
+                            case "Viking Helmet":
+                                x = 830; y = 2950; z = 590; break;
+                            case "'Outside'":
+                                x = 60; y = -6590; z = -545; break;
+                        }
+                    }
+                    else if (mapid == 19) //hangar cooper
+                    {
+                        switch (txt)
+                        {
+                            default:
+                                break;
+                            case "Center":
+                                x = -180; y = -125; z = 75; break;
+                            case "Control Room":
+                                x = -1890; y = -130; z = 75; break;
+                            case "Truck":
+                                x = -340; y = 2220; z = 1030; break;
+                        }
+                    }
+                    else if (mapid == 20) //sewer
+                    {
+                        switch (txt)
+                        {
+                            default:
+                                break;
+                            case "Entrance":
+                                x = 20150; y = -9850; z = 210; break;
+                            case "Iceland Hotel Path":
+                                x = 16490; y = 7280; z = 210; break;
+                            case "Exit to Surface":
+                                x = 7960; y = -12750; z = 210; break;
+                            case "Iceland Hotel Entrance":
+                                x = 7425; y = 9500; z = 210; break;
+                        }
+                    }
+                    else if (mapid == 21) //biplane
+                    {
+                        switch (txt)
+                        {
+                            default:
+                                break;
+                            case "Barn":
+                                x = -1890; y = 380; z = 870; break;
+                            case "Crop Squares":
+                                x = 17800; y = 3210; z = 900; break;
+                            case "Bridge 1":
+                                x = -140; y = -14670; z = 620; break;
+                            case "Bridge 2":
+                                x = -4444; y = 16170; z = 450; break;
+                            case "Bridge 3":
+                                x = 10460; y = 13260; z = 500; break;
+                            case "Boss Arena":
+                                x = 251764; y = -186; z = 0; break;
+                        }
+                    }
+                    else if (mapid == 23) //china
+                    {
+                        switch (txt)
+                        {
+                            default:
+                                break;
+                            case "Safehouse":
+                                x = -5440; y = -7500; z = 2020; break;
+                            case "Turret Tower":
+                                x = -5330; y = -8415; z = 3500; break;
+                            case "Walk Across the Heavens":
+                                x = 7310; y = -8370; z = 4980; break;
+                            case "Graveyard":
+                                x = 8570; y = 10150; z = 5840; break;
+                            case "Statue":
+                                x = 795; y = -2980; z = 1915; break;
+                            case "Palace":
+                                x = 940; y = 2255; z = 4790; break;
+                        }
+                    }
+                    else if (mapid == 24) //china intr
+                    {
+                        switch (txt)
+                        {
+                            default:
+                                break;
+                            case "Start Platform":
+                                x = -2085; y = -54630; z = 850; break;
+                            case "Panda King's Perch":
+                                x = 400; y = -50485; z = 1888; break;
+                            case "House":
+                                x = 3470; y = -51845; z = 820; break;
+                            case "Clifftop":
+                                x = -2820; y = -57675; z = 5420; break;
+                        }
+                    }
+                    else if (mapid == 26) //bamboo
+                    {
+                        switch (txt)
+                        {
+                            default:
+                                break;
+                            case "Entrance Platform":
+                                x = -50; y = 3060; z = 840; break;
+                            case "Ground Level":
+                                x = 130; y = 30410; z = -50; break;
+                            case "Overlook":
+                                x = -4545; y = 35970; z = 4675; break;
+                        }
+                    }
+                    else if (mapid == 27) //panda apt
+                    {
+                        switch (txt)
+                        {
+                            default:
+                                break;
+                            case "Yang":
+                                x = -240; y = -100; z = 19995; break;
+                            case "Yin":
+                                x = -1855; y = -100; z = 19995; break;
+                        }
+                    }
+                    else if (mapid == 28) //grapple
+                    {
+                        switch (txt)
+                        {
+                            default:
+                                break;
+                            case "Laser Wall":
+                                x = -2930; y = 0; z = -50; break;
+                            case "Second Floor":
+                                x = 1050; y = 1580; z = 645; break;
+                            case "Computer":
+                                x = 1075; y = -1515; z = 645; break;
+                            case "'Outside'":
+                                x = -4210; y = -140; z = -185; break;
+                            case "Overlook":
+                                x = -10480; y = -4100; z = 2760; break;
+                        }
+                    }
+                    else if (mapid == 29) //palace
+                    {
+                        switch (txt)
+                        {
+                            default:
+                                break;
+                            case "Vases":
+                                x = -5270; y = -60; z = -190; break;
+                            case "Computer":
+                                x = -2250; y = 1445; z = 0; break;
+                            case "Jing King's Room":
+                                x = 470; y = -1500; z = 0; break;
+                            case "Drill Site":
+                                x = 2075; y = 15000; z = 545; break;
+                        }
+                    }
+                    else if (mapid == 30) //treasure temple
+                    {
+                        switch (txt)
+                        {
+                            default:
+                                break;
+                            case "Entrance":
+                                x = -6300; y = -130; z = 330; break;
+                            case "Treasure Area":
+                                x = 1725; y = 730; z = -330; break;
+                            case "Crawlspace":
+                                x = -560; y = 140; z = 1640; break;
+                        }
+                    }
+                    else if (mapid == 31) //pirate hub
+                    {
+                        switch (txt)
+                        {
+                            default:
+                                break;
+                            case "Safehouse":
+                                x = 4900; y = 1345; z = 1125; break;
+                            case "Safehouse (Top)":
+                                x = 5590; y = 2310; z = 2680; break;
+                            case "Skull Keep (Top)":
+                                x = -9600; y = -1880; z = 4410; break;
+                            case "Waterfall (Top)":
+                                x = 3625; y = 16360; z = 4435; break;
+                            case "Fireplace":
+                                x = -530; y = 7030; z = 1970; break;
+                            case "Monkeys?":
+                                x = -7415; y = 11565; z = 1520; break;
+                            case "Cooper Gang Ship":
+                                x = 11390; y = -9290; z = 1550; break;
+                            case "Archipelago":
+                                x = -26550; y = -19930; z = 2100; break;
+                        }
+                    }
+                    else if (mapid == 33) //underwater
+                    {
+                        switch (txt)
+                        {
+                            default:
+                                break;
+                            case "Spawn":
+                                x = 28980; y = -100; z = 2600; break;
+                            case "Ship (Top)":
+                                x = 21020; y = 14180; z = 6030; break;
+                            case "Shipwreck":
+                                x = 22460; y = 12380; z = -3480; break;
+                            case "Depths":
+                                x = 21910; y = 8690; z = -7285; break;
+                            case "Ocean Current":
+                                x = 20860; y = 22410; z = -7120; break;
+                        }
+                    }
+                    else if (mapid == 34) //dagger
+                    {
+                        switch (txt)
+                        {
+                            default:
+                                break;
+                            case "Cooper Gang Ship":
+                                x = -16760; y = 2940; z = 1000; break;
+                            case "Palm Tree Circle":
+                                x = -8040; y = -970; z = 1100; break;
+                            case "Flipped Ship":
+                                x = 1620; y = -5250; z = 1140; break;
+                            case "Pirate Ship":
+                                x = 15680; y = 5290; z = 770; break;
+                            case "Mountain Peak":
+                                x = 2215; y = 10860; z = 7940; break;
+                        }
+                    }
+                    else if (mapid == 35) //kaine
+                    {
+                        switch (txt)
+                        {
+                            default:
+                                break;
+                            case "Spawn":
+                                x = -6715; y = -14380; z = -2900; break;
+                            case "Wall Sneak (Top)":
+                                x = -6285; y = -2220; z = -2180; break;
+                            case "Ventilation Shaft":
+                                x = -1870; y = 4765; z = -3855; break;
+                            case "Vault Entrance":
+                                x = -1085; y = -100; z = 2360; break;
+                            case "Ship Dock":
+                                x = 7855; y = -24360; z = -3770; break;
+                            case "RC Car Track":
+                                x = -13650; y = -14110; z = -2190; break;
+                            case "Random Rope":
+                                x = -16480; y = 1520; z = -2830; break;
+                            case "Rock Formation":
+                                x = 13730; y = 20650; z = 2100; break;
+                        }
+                    }
+                    else if (mapid == 36) //underwater
+                    {
+                        switch (txt)
+                        {
+                            default:
+                                break;
+                            case "Spawn":
+                                x = 51570; y = 23850; z = -5745; break;
+                            case "Water Tube":
+                                x = 745; y = -34265; z = -820; break;
+                            case "Boss Area":
+                                x = 10200; y = -59780; z = -550; break;
+                        }
+                    }
+                    else if (mapid == 37) //vault entrance
+                    {
+                        switch (txt)
+                        {
+                            default:
+                                break;
+                            case "Center":
+                                x = 0; y = 0; z = 40; break;
+                            case "Entrance Door":
+                                x = 4350; y = -45; z = 460; break;
+                        }
+                    }
+                    else if (mapid == 38) //vault gauntlet
+                    {
+                        switch (txt)
+                        {
+                            default:
+                                break;
+                            case "Slytunkhamen II":
+                                x = -28690; y = 21665; z = -2175; break;
+                            case "Sir Galleth Cooper":
+                                x = -24715; y = 13995; z = -2260; break;
+                            case "Salim Al-Kupar":
+                                x = -13760; y = 12485; z = -2200; break;
+                            case "Slaigh MacCooper":
+                                x = -15325; y = 24680; z = -2190; break;
+                            case "Rioichi Cooper":
+                                x = -21130; y = 19955; z = -180; break;
+                            case "Henriette Cooper":
+                                x = -10530; y = 13200; z = 120; break;
+                            case "Tennesee 'Kid' Cooper":
+                                x = 2010; y = 13275; z = -2280; break;
+                            case "Thaddeus Winslow Cooper III":
+                                x = 9360; y = 1820; z = -2185; break;
+                            case "Otto Van Cooper":
+                                x = -2050; y = 2740; z = 0; break;
+                            case "Conner Cooper":
+                                x = 7515; y = 5030; z = 150; break;
+                            case "Inner Sanctum Entrance":
+                                x = 16645; y = -2260; z = 120; break;
+                        }
+                    }
+                    else if (mapid == 39) //inner sanctum
+                    {
+                        switch (txt)
+                        {
+                            default:
+                                break;
+                            case "Center":
+                                x = 0; y = 0; z = 30; break;
+                            case "Top Platform":
+                                x = -3840; y = 1600; z = 2970; break;
                         }
                     }
                 }
 
-                WarpSelectedCharacter(x, y, z + 100);
+                WarpSelectedCharacter(x, y, z + 300);
 
+            }
+            else //if empty
+            {
+                MessageBox.Show("You need to select a warp location to warp.", "Bruh", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
 
         }
@@ -1787,7 +3089,19 @@ namespace slurky
                 SetGlobalValue(GlobalAddresses.ActChar, type: "int", towrite: GetCharacterIdFromName(LoadToLevelAs).ToString());
                 m.WriteBytes((BaseAddress + GlobalAddresses.CurrentLevelAOB).ToString("X"), LevelAOBs[cb_loadlvl.SelectedIndex]);
                 SetGlobalValue(GlobalAddresses.Reload, "int", "1");
-                SetGlobalValue(GlobalAddresses.ActChar, type: "int", towrite: GetCharacterIdFromName(LoadToLevelAs).ToString(), freeze: true);
+                while (true)
+                {
+                    SetGlobalValue(GlobalAddresses.ActChar, type: "int", towrite: GetCharacterIdFromName(LoadToLevelAs).ToString());
+                    if(GetGlobalValue(GlobalAddresses.Loading) == 3)
+                    {
+                        break;
+                    }
+                }
+                
+            }
+            else //if empty
+            {
+                MessageBox.Show("You need to select a map to load a map.", "Bruh", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 
@@ -1806,6 +3120,7 @@ namespace slurky
                     case CharacterNames.Murray:
                         return 9;
                 }
+                return 7; //fallback to sly if not specified
             }
             else if (CurrentBuild.StartsWith("Sly 3"))
             {
@@ -1819,7 +3134,14 @@ namespace slurky
                         return 25;
                     case CharacterNames.Murray:
                         return 26;
+                    case CharacterNames.Guru:
+                        return 29;
+                    case CharacterNames.PandaKing:
+                        return 30;
+                    case CharacterNames.Penelope:
+                        return 31;
                 }
+                return 24; //fallback to sly if not specified
             }
             return 0;
         }
@@ -1934,6 +3256,7 @@ namespace slurky
         private void btn_resetscale_Click(object sender, EventArgs e)
         {
             SetActiveCharacterData(offset: EntityStruct.TransformComponent, offset2: TransformComponent.Scale, setTo: "1", vec3: true, writeType: "float");
+            tbar_scale.Value = 10;
         }
 
         private void btn_resetcam_Click(object sender, EventArgs e)
@@ -1986,6 +3309,176 @@ namespace slurky
             }
         }
 
+        private void tbar_clock_ValueChanged(object sender, EventArgs e)
+        {
+            float val = (float)tbar_clock.Value / 10;
+            Console.WriteLine(val.ToString("f1"));
+            SetGlobalValue(GlobalAddresses.Clock, "float", val.ToString("f1"), freeze: true);
+        }
+
+        
+
+        public async void GetEntityList()
+        {
+            list_npcs.Invoke((MethodInvoker)delegate
+            {
+                list_npcs.Items.Clear();
+            });
+            bool cleanup = false;
+            cb_onlynpc.Invoke((MethodInvoker)delegate
+            {
+                cleanup = cb_onlynpc.Checked;
+            });
+
+            IEnumerable<long> results = await m.AoBScan((long)BaseAddress, ((long)BaseAddress+0x2000000), "46 4B 24 58", true, true);
+
+            foreach (long res in results)
+            {
+                bool bad = false;
+                string listitem = ("> [" + res.ToString("X") + "] >> ") + m.ReadString(res.ToString("X")) + " << First = [" +
+                (BaseAddress + m.ReadUInt((res - 0x18).ToString("X"))).ToString("X") + "].";
+                listitem = listitem.Replace("FK$X", "");
+                
+                if(cleanup)
+                {
+                    bad = true;
+
+                    if (listitem.Contains("swarmer")) bad = false;
+                    else if (listitem.Contains("penelope")) bad = false;
+                    else if (listitem.Contains("npc")) bad = false;
+                    else if (listitem.Contains("jt")) bad = false;
+                    else if (listitem.Contains("dmitri")) bad = false;
+                    else if (listitem.Contains("dimitri")) bad = false;
+                    else if (listitem.Contains("guard")) bad = false;
+                    else if (listitem.Contains("fwee")) bad = false;
+                    else if (listitem.Contains("doc")) bad = false;
+                    else if (listitem.Contains("carmelita")) bad = false;
+                    else if (listitem.Contains("shaman")) bad = false;
+                    else if (listitem.Contains("bentley")) bad = false;
+                    else if (listitem.Contains("murray")) bad = false;
+                    /*if (listitem.Contains("m_")) bad = true;
+                    else if (listitem.Contains("explode_")) bad = true;
+                    else if (listitem.Contains("pe_")) bad = true;
+                    else if (listitem.Contains("psys_")) bad = true;
+                    else if (listitem.Contains("xps_")) bad = true;
+                    else if (listitem.Contains("o_")) bad = true;
+                    else if (listitem.Contains("laser")) bad = true;
+                    else if (listitem.Contains("coin")) bad = true;
+                    else if (listitem.Contains("c_")) bad = true;
+                    else if (listitem.Contains("adjust")) bad = true;
+                    else if (listitem.Contains("abandon")) bad = true;
+                    else if (listitem.Contains("item")) bad = true;
+                    else if (listitem.Contains("dirt")) bad = true;
+                    else if (listitem.Contains("ammo")) bad = true;
+                    else if (listitem.Contains("explosion")) bad = true;
+                    else if (listitem.Contains("mug")) bad = true;
+                    else if (listitem.Contains("goal")) bad = true;
+                    else if (listitem.Contains("glow")) bad = true;
+                    else if (listitem.Contains("medicine")) bad = true;
+                    else if (listitem.Contains("booty")) bad = true;
+                    else if (listitem.Contains("stock")) bad = true;
+                    else if (listitem.Contains("dart")) bad = true;
+                    else if (listitem.Contains("mine")) bad = true;
+                    else if (listitem.Contains("webcam")) bad = true;
+                    else if (listitem.Contains("splash")) bad = true;
+                    else if (listitem.Contains("dazed")) bad = true;
+                    else if (listitem.Contains("crate")) bad = true;
+                    else if (listitem.Contains("mission")) bad = true;
+                    else if (listitem.Contains("ball")) bad = true;
+                    else if (listitem.Contains("trap")) bad = true;
+                    else if (listitem.Contains("rig")) bad = true;
+                    else if (listitem.Contains("glint")) bad = true;
+                    else if (listitem.Contains("bullet")) bad = true;
+                    else if (listitem.Contains("compass")) bad = true;
+                    else if (listitem.Contains("stomp")) bad = true;
+                    else if (listitem.Contains("m_")) bad = true;
+                    else if (listitem.Contains("v_")) bad = true;
+                    else if (listitem.Contains("h_")) bad = true;
+                    else if (listitem.Contains("c_") && !listitem.Contains("npc")) bad = true;
+                    else if (listitem.Contains("p_")) bad = true;
+                    else if (listitem.Contains("torso")) bad = true;
+                    else if (listitem.Contains("missile")) bad = true;
+                    else if (listitem.Contains("target")) bad = true;
+                    else if (listitem.Contains("bouncer")) bad = true;
+                    else if (listitem.Contains("standard")) bad = true;
+                    else if (listitem.Contains("vault")) bad = true;
+                    else if (listitem.Contains("barrel")) bad = true;*/
+                }
+
+
+                if (!bad)
+                {
+                    list_npcs.Invoke((MethodInvoker)delegate
+                    {
+                        list_npcs.Items.Add(listitem);
+                    });
+                }
+            }
+            
+        }
+
+        
+
+        string GetStringBetween(string input, string from, string to)
+        {
+            string final = "";
+            int pos1 = input.IndexOf(from) + from.Length;
+            int pos2 = input.IndexOf(to);
+
+            final = input.Substring(pos1, pos2 - pos1);
+            return final;
+        }
+
+        private void cb_onlynpc_CheckedChanged(object sender, EventArgs e)
+        {
+            GetEntityList();
+        }
+
+        private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if(tabControl1.SelectedIndex == 3 && GetGlobalValue(GlobalAddresses.Loading) == 3)
+            {
+                GetEntityList();
+            }
+        }
+
+        private void cb_guardai_CheckedChanged(object sender, EventArgs e)
+        {
+            if(cb_guardai.Checked)
+            {
+                SetGlobalValue(GlobalAddresses.GuardAI, "int", "0", freeze: false);
+                return;
+            }
+            SetGlobalValue(GlobalAddresses.GuardAI, "int", "1", freeze: true);
+        }
+
+        private void list_npcs_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if(list_npcs.Text != "")
+            {
+                string address = GetStringBetween(list_npcs.Text, "> [", "] >> ");
+                DialogResult dres = MessageBox.Show("Inspect additional info about this address?", "Inspect " + address + "?", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                
+                if(dres == DialogResult.Yes)
+                {
+                    string listptr = GetStringBetween(list_npcs.Text, "= [", "].");
+                    string entname = m.ReadString(address);
+                    entname = entname.Replace("FK$X", "");
+                    entname = entname.Replace("_", " ");
+                    if(listptr == BaseAddress.ToString("X"))
+                    {
+                        DialogResult dres2 = MessageBox.Show("Faulty list pointer, continue anyway?", "Faulty list pointer!", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
+                        if(dres2 == DialogResult.No)
+                        {
+                            return;
+                        }
+                    }
+                    MessageBox.Show("FK$X Starts at: " + address + ".\n" + listptr + " points to the list of '" + entname + "(s)' (First struct in list)."
+                    + "\n\nNot all of the FK$X's work the same way so the list pointer might be faulty.", "Entity Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+        }
+
         void BottleSequence()
         {
             List<float> positions = new List<float>();
@@ -2025,5 +3518,6 @@ namespace slurky
                 Thread.Sleep(100);
             }
         }
+        
     }
 }

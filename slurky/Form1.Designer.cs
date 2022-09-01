@@ -66,14 +66,12 @@
             this.actScale = new System.Windows.Forms.Label();
             this.actEntName = new System.Windows.Forms.Label();
             this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.groupBox11 = new System.Windows.Forms.GroupBox();
-            this.label10 = new System.Windows.Forms.Label();
-            this.cb_loadas = new System.Windows.Forms.ComboBox();
             this.groupBox10 = new System.Windows.Forms.GroupBox();
             this.button1 = new System.Windows.Forms.Button();
-            this.label9 = new System.Windows.Forms.Label();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.gb_loadmap = new System.Windows.Forms.GroupBox();
+            this.cb_loadas = new System.Windows.Forms.ComboBox();
+            this.label9 = new System.Windows.Forms.Label();
             this.btn_randmap = new System.Windows.Forms.Button();
             this.btn_loadlvl = new System.Windows.Forms.Button();
             this.cb_loadlvl = new System.Windows.Forms.ComboBox();
@@ -85,7 +83,8 @@
             this.btn_reload = new System.Windows.Forms.Button();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
-            this.trackBar2 = new System.Windows.Forms.TrackBar();
+            this.cb_guardai = new System.Windows.Forms.CheckBox();
+            this.tbar_clock = new System.Windows.Forms.TrackBar();
             this.label8 = new System.Windows.Forms.Label();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.btn_resetcams = new System.Windows.Forms.Button();
@@ -96,11 +95,23 @@
             this.tbar_camspeed = new System.Windows.Forms.TrackBar();
             this.label5 = new System.Windows.Forms.Label();
             this.btn_resetcam = new System.Windows.Forms.Button();
+            this.tabPage5 = new System.Windows.Forms.TabPage();
+            this.cb_onlynpc = new System.Windows.Forms.CheckBox();
+            this.list_npcs = new System.Windows.Forms.ListBox();
             this.tabPage4 = new System.Windows.Forms.TabPage();
             this.groupBox9 = new System.Windows.Forms.GroupBox();
             this.btn_bottle = new System.Windows.Forms.CheckBox();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
             this.cb_fun_lanky = new System.Windows.Forms.CheckBox();
+            this.tabPage6 = new System.Windows.Forms.TabPage();
+            this.label17 = new System.Windows.Forms.Label();
+            this.label16 = new System.Windows.Forms.Label();
+            this.label12 = new System.Windows.Forms.Label();
+            this.label15 = new System.Windows.Forms.Label();
+            this.label14 = new System.Windows.Forms.Label();
+            this.label13 = new System.Windows.Forms.Label();
+            this.label11 = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
             this.label_base = new System.Windows.Forms.Label();
             this.toolTips = new System.Windows.Forms.ToolTip(this.components);
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
@@ -114,20 +125,21 @@
             this.groupBox3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tbar_scale)).BeginInit();
             this.tabPage2.SuspendLayout();
-            this.groupBox11.SuspendLayout();
             this.groupBox10.SuspendLayout();
             this.gb_loadmap.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.tabPage3.SuspendLayout();
             this.groupBox6.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tbar_clock)).BeginInit();
             this.groupBox5.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tbar_fov)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbar_rendDist)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbar_camspeed)).BeginInit();
+            this.tabPage5.SuspendLayout();
             this.tabPage4.SuspendLayout();
             this.groupBox9.SuspendLayout();
             this.groupBox7.SuspendLayout();
+            this.tabPage6.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -166,7 +178,9 @@
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPage2);
             this.tabControl1.Controls.Add(this.tabPage3);
+            this.tabControl1.Controls.Add(this.tabPage5);
             this.tabControl1.Controls.Add(this.tabPage4);
+            this.tabControl1.Controls.Add(this.tabPage6);
             this.tabControl1.Cursor = System.Windows.Forms.Cursors.Default;
             this.tabControl1.Font = new System.Drawing.Font("Franklin Gothic Medium", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tabControl1.Location = new System.Drawing.Point(2, 29);
@@ -175,6 +189,7 @@
             this.tabControl1.SelectedIndex = 0;
             this.tabControl1.Size = new System.Drawing.Size(622, 384);
             this.tabControl1.TabIndex = 0;
+            this.tabControl1.SelectedIndexChanged += new System.EventHandler(this.tabControl1_SelectedIndexChanged);
             // 
             // tabPage1
             // 
@@ -355,54 +370,58 @@
             // 
             // btn_incZ
             // 
+            this.btn_incZ.BackColor = System.Drawing.Color.Silver;
             this.btn_incZ.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btn_incZ.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.btn_incZ.ForeColor = System.Drawing.Color.MidnightBlue;
-            this.btn_incZ.Location = new System.Drawing.Point(39, 146);
+            this.btn_incZ.Location = new System.Drawing.Point(66, 148);
             this.btn_incZ.Name = "btn_incZ";
-            this.btn_incZ.Size = new System.Drawing.Size(24, 31);
+            this.btn_incZ.Size = new System.Drawing.Size(30, 30);
             this.btn_incZ.TabIndex = 13;
             this.btn_incZ.Text = "+";
-            this.btn_incZ.UseVisualStyleBackColor = true;
+            this.btn_incZ.UseVisualStyleBackColor = false;
             this.btn_incZ.Click += new System.EventHandler(this.btn_incZ_Click);
             // 
             // btn_decZ
             // 
+            this.btn_decZ.BackColor = System.Drawing.Color.Silver;
             this.btn_decZ.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btn_decZ.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.btn_decZ.ForeColor = System.Drawing.Color.MidnightBlue;
-            this.btn_decZ.Location = new System.Drawing.Point(12, 146);
+            this.btn_decZ.Location = new System.Drawing.Point(30, 148);
             this.btn_decZ.Name = "btn_decZ";
-            this.btn_decZ.Size = new System.Drawing.Size(24, 31);
+            this.btn_decZ.Size = new System.Drawing.Size(30, 30);
             this.btn_decZ.TabIndex = 12;
             this.btn_decZ.Text = "-";
-            this.btn_decZ.UseVisualStyleBackColor = true;
+            this.btn_decZ.UseVisualStyleBackColor = false;
             this.btn_decZ.Click += new System.EventHandler(this.btn_decZ_Click);
             // 
             // btn_incY
             // 
+            this.btn_incY.BackColor = System.Drawing.Color.Silver;
             this.btn_incY.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btn_incY.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.btn_incY.ForeColor = System.Drawing.Color.MidnightBlue;
-            this.btn_incY.Location = new System.Drawing.Point(39, 96);
+            this.btn_incY.Location = new System.Drawing.Point(66, 96);
             this.btn_incY.Name = "btn_incY";
-            this.btn_incY.Size = new System.Drawing.Size(24, 31);
+            this.btn_incY.Size = new System.Drawing.Size(30, 30);
             this.btn_incY.TabIndex = 11;
             this.btn_incY.Text = "+";
-            this.btn_incY.UseVisualStyleBackColor = true;
+            this.btn_incY.UseVisualStyleBackColor = false;
             this.btn_incY.Click += new System.EventHandler(this.btn_incY_Click);
             // 
             // btn_decY
             // 
+            this.btn_decY.BackColor = System.Drawing.Color.Silver;
             this.btn_decY.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btn_decY.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.btn_decY.ForeColor = System.Drawing.Color.MidnightBlue;
-            this.btn_decY.Location = new System.Drawing.Point(12, 96);
+            this.btn_decY.Location = new System.Drawing.Point(30, 96);
             this.btn_decY.Name = "btn_decY";
-            this.btn_decY.Size = new System.Drawing.Size(24, 31);
+            this.btn_decY.Size = new System.Drawing.Size(30, 30);
             this.btn_decY.TabIndex = 10;
             this.btn_decY.Text = "-";
-            this.btn_decY.UseVisualStyleBackColor = true;
+            this.btn_decY.UseVisualStyleBackColor = false;
             this.btn_decY.Click += new System.EventHandler(this.btn_decY_Click);
             // 
             // btn_0act
@@ -435,46 +454,50 @@
             // 
             // btn_incX
             // 
+            this.btn_incX.BackColor = System.Drawing.Color.Silver;
             this.btn_incX.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btn_incX.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.btn_incX.ForeColor = System.Drawing.Color.MidnightBlue;
-            this.btn_incX.Location = new System.Drawing.Point(39, 42);
+            this.btn_incX.Location = new System.Drawing.Point(66, 43);
             this.btn_incX.Name = "btn_incX";
-            this.btn_incX.Size = new System.Drawing.Size(24, 31);
+            this.btn_incX.Size = new System.Drawing.Size(30, 30);
             this.btn_incX.TabIndex = 9;
             this.btn_incX.Text = "+";
-            this.btn_incX.UseVisualStyleBackColor = true;
+            this.btn_incX.UseVisualStyleBackColor = false;
             this.btn_incX.Click += new System.EventHandler(this.btn_incX_Click);
             // 
             // btn_decX
             // 
+            this.btn_decX.BackColor = System.Drawing.Color.Silver;
             this.btn_decX.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btn_decX.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.btn_decX.ForeColor = System.Drawing.Color.MidnightBlue;
-            this.btn_decX.Location = new System.Drawing.Point(12, 42);
+            this.btn_decX.Location = new System.Drawing.Point(30, 42);
             this.btn_decX.Name = "btn_decX";
-            this.btn_decX.Size = new System.Drawing.Size(24, 31);
+            this.btn_decX.Size = new System.Drawing.Size(30, 30);
             this.btn_decX.TabIndex = 8;
             this.btn_decX.Text = "-";
-            this.btn_decX.UseVisualStyleBackColor = true;
+            this.btn_decX.UseVisualStyleBackColor = false;
             this.btn_decX.Click += new System.EventHandler(this.btn_decX_Click);
             // 
             // actCoordZ
             // 
             this.actCoordZ.AutoSize = true;
+            this.actCoordZ.BackColor = System.Drawing.Color.MidnightBlue;
             this.actCoordZ.Cursor = System.Windows.Forms.Cursors.Default;
-            this.actCoordZ.ForeColor = System.Drawing.Color.MidnightBlue;
+            this.actCoordZ.ForeColor = System.Drawing.Color.LightGray;
             this.actCoordZ.Location = new System.Drawing.Point(32, 128);
             this.actCoordZ.Name = "actCoordZ";
-            this.actCoordZ.Size = new System.Drawing.Size(102, 17);
+            this.actCoordZ.Size = new System.Drawing.Size(66, 17);
             this.actCoordZ.TabIndex = 5;
-            this.actCoordZ.Text = "99999.99999";
+            this.actCoordZ.Text = "0.00000";
             // 
             // actCoordY
             // 
             this.actCoordY.AutoSize = true;
+            this.actCoordY.BackColor = System.Drawing.Color.MidnightBlue;
             this.actCoordY.Cursor = System.Windows.Forms.Cursors.Default;
-            this.actCoordY.ForeColor = System.Drawing.Color.MidnightBlue;
+            this.actCoordY.ForeColor = System.Drawing.Color.LightGray;
             this.actCoordY.Location = new System.Drawing.Point(30, 76);
             this.actCoordY.Name = "actCoordY";
             this.actCoordY.Size = new System.Drawing.Size(66, 17);
@@ -484,8 +507,9 @@
             // actCoordX
             // 
             this.actCoordX.AutoSize = true;
+            this.actCoordX.BackColor = System.Drawing.Color.MidnightBlue;
             this.actCoordX.Cursor = System.Windows.Forms.Cursors.Default;
-            this.actCoordX.ForeColor = System.Drawing.Color.MidnightBlue;
+            this.actCoordX.ForeColor = System.Drawing.Color.LightGray;
             this.actCoordX.Location = new System.Drawing.Point(30, 22);
             this.actCoordX.Name = "actCoordX";
             this.actCoordX.Size = new System.Drawing.Size(66, 17);
@@ -495,8 +519,9 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("Franklin Gothic Medium", 9.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.ForeColor = System.Drawing.Color.IndianRed;
+            this.label3.BackColor = System.Drawing.Color.Transparent;
+            this.label3.Font = new System.Drawing.Font("Franklin Gothic Medium", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.ForeColor = System.Drawing.Color.MidnightBlue;
             this.label3.Location = new System.Drawing.Point(9, 128);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(20, 17);
@@ -506,8 +531,9 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Franklin Gothic Medium", 9.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.ForeColor = System.Drawing.Color.IndianRed;
+            this.label2.BackColor = System.Drawing.Color.Transparent;
+            this.label2.Font = new System.Drawing.Font("Franklin Gothic Medium", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.ForeColor = System.Drawing.Color.MidnightBlue;
             this.label2.Location = new System.Drawing.Point(9, 76);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(20, 17);
@@ -517,8 +543,9 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Franklin Gothic Medium", 9.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.ForeColor = System.Drawing.Color.IndianRed;
+            this.label1.BackColor = System.Drawing.Color.Transparent;
+            this.label1.Font = new System.Drawing.Font("Franklin Gothic Medium", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.ForeColor = System.Drawing.Color.MidnightBlue;
             this.label1.Location = new System.Drawing.Point(9, 22);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(20, 17);
@@ -579,7 +606,7 @@
             // 
             // actEntName
             // 
-            this.actEntName.BackColor = System.Drawing.SystemColors.ButtonShadow;
+            this.actEntName.BackColor = System.Drawing.Color.Silver;
             this.actEntName.ForeColor = System.Drawing.Color.Red;
             this.actEntName.Location = new System.Drawing.Point(6, 21);
             this.actEntName.Name = "actEntName";
@@ -592,7 +619,6 @@
             // 
             this.tabPage2.BackColor = System.Drawing.Color.Silver;
             this.tabPage2.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.tabPage2.Controls.Add(this.groupBox11);
             this.tabPage2.Controls.Add(this.groupBox10);
             this.tabPage2.Controls.Add(this.gb_loadmap);
             this.tabPage2.Controls.Add(this.groupBox4);
@@ -604,50 +630,14 @@
             this.tabPage2.TabIndex = 13;
             this.tabPage2.Text = "Map";
             // 
-            // groupBox11
-            // 
-            this.groupBox11.Controls.Add(this.label10);
-            this.groupBox11.Controls.Add(this.cb_loadas);
-            this.groupBox11.ForeColor = System.Drawing.Color.MidnightBlue;
-            this.groupBox11.Location = new System.Drawing.Point(328, 113);
-            this.groupBox11.Name = "groupBox11";
-            this.groupBox11.Size = new System.Drawing.Size(276, 74);
-            this.groupBox11.TabIndex = 3;
-            this.groupBox11.TabStop = false;
-            this.groupBox11.Text = "Load in as (character)";
-            // 
-            // label10
-            // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(6, 23);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(115, 17);
-            this.label10.TabIndex = 7;
-            this.label10.Text = "Select Character";
-            // 
-            // cb_loadas
-            // 
-            this.cb_loadas.BackColor = System.Drawing.Color.LightGray;
-            this.cb_loadas.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.cb_loadas.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cb_loadas.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.cb_loadas.ForeColor = System.Drawing.Color.MidnightBlue;
-            this.cb_loadas.FormattingEnabled = true;
-            this.cb_loadas.Location = new System.Drawing.Point(6, 43);
-            this.cb_loadas.Name = "cb_loadas";
-            this.cb_loadas.Size = new System.Drawing.Size(264, 25);
-            this.cb_loadas.TabIndex = 3;
-            this.cb_loadas.SelectedIndexChanged += new System.EventHandler(this.cb_loadas_SelectedIndexChanged);
-            // 
             // groupBox10
             // 
             this.groupBox10.Controls.Add(this.button1);
-            this.groupBox10.Controls.Add(this.label9);
             this.groupBox10.Controls.Add(this.comboBox1);
             this.groupBox10.ForeColor = System.Drawing.Color.MidnightBlue;
             this.groupBox10.Location = new System.Drawing.Point(328, 6);
             this.groupBox10.Name = "groupBox10";
-            this.groupBox10.Size = new System.Drawing.Size(276, 101);
+            this.groupBox10.Size = new System.Drawing.Size(276, 112);
             this.groupBox10.TabIndex = 2;
             this.groupBox10.TabStop = false;
             this.groupBox10.Text = "Load Job";
@@ -658,22 +648,13 @@
             this.button1.Cursor = System.Windows.Forms.Cursors.Hand;
             this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.button1.ForeColor = System.Drawing.Color.MidnightBlue;
-            this.button1.Location = new System.Drawing.Point(6, 69);
+            this.button1.Location = new System.Drawing.Point(6, 51);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(264, 23);
             this.button1.TabIndex = 6;
             this.button1.Text = "Load Job";
-            this.toolTips.SetToolTip(this.button1, "Reload current level.");
+            this.toolTips.SetToolTip(this.button1, "Load Selected Job");
             this.button1.UseVisualStyleBackColor = false;
-            // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(6, 18);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(126, 17);
-            this.label9.TabIndex = 6;
-            this.label9.Text = "Select Job to Load";
             // 
             // comboBox1
             // 
@@ -683,23 +664,50 @@
             this.comboBox1.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.comboBox1.ForeColor = System.Drawing.Color.MidnightBlue;
             this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(6, 38);
+            this.comboBox1.Location = new System.Drawing.Point(6, 20);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(264, 25);
             this.comboBox1.TabIndex = 6;
             // 
             // gb_loadmap
             // 
+            this.gb_loadmap.Controls.Add(this.cb_loadas);
+            this.gb_loadmap.Controls.Add(this.label9);
             this.gb_loadmap.Controls.Add(this.btn_randmap);
             this.gb_loadmap.Controls.Add(this.btn_loadlvl);
             this.gb_loadmap.Controls.Add(this.cb_loadlvl);
             this.gb_loadmap.ForeColor = System.Drawing.Color.MidnightBlue;
-            this.gb_loadmap.Location = new System.Drawing.Point(6, 159);
+            this.gb_loadmap.Location = new System.Drawing.Point(6, 6);
             this.gb_loadmap.Name = "gb_loadmap";
-            this.gb_loadmap.Size = new System.Drawing.Size(317, 112);
+            this.gb_loadmap.Size = new System.Drawing.Size(317, 143);
             this.gb_loadmap.TabIndex = 1;
             this.gb_loadmap.TabStop = false;
             this.gb_loadmap.Text = "Load Map";
+            // 
+            // cb_loadas
+            // 
+            this.cb_loadas.BackColor = System.Drawing.Color.LightGray;
+            this.cb_loadas.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.cb_loadas.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cb_loadas.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.cb_loadas.ForeColor = System.Drawing.Color.MidnightBlue;
+            this.cb_loadas.FormattingEnabled = true;
+            this.cb_loadas.Location = new System.Drawing.Point(102, 109);
+            this.cb_loadas.Name = "cb_loadas";
+            this.cb_loadas.Size = new System.Drawing.Size(209, 25);
+            this.cb_loadas.TabIndex = 3;
+            this.cb_loadas.SelectedIndexChanged += new System.EventHandler(this.cb_loadas_SelectedIndexChanged);
+            // 
+            // label9
+            // 
+            this.label9.BackColor = System.Drawing.Color.MidnightBlue;
+            this.label9.ForeColor = System.Drawing.Color.LightGray;
+            this.label9.Location = new System.Drawing.Point(6, 109);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(90, 25);
+            this.label9.TabIndex = 6;
+            this.label9.Text = "Character:";
+            this.label9.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // btn_randmap
             // 
@@ -751,7 +759,7 @@
             this.groupBox4.Controls.Add(this.cb_warps);
             this.groupBox4.Controls.Add(this.btn_reload);
             this.groupBox4.ForeColor = System.Drawing.Color.MidnightBlue;
-            this.groupBox4.Location = new System.Drawing.Point(6, 6);
+            this.groupBox4.Location = new System.Drawing.Point(6, 155);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Size = new System.Drawing.Size(317, 147);
             this.groupBox4.TabIndex = 0;
@@ -760,12 +768,11 @@
             // 
             // label_curlev
             // 
-            this.label_curlev.AutoSize = true;
-            this.label_curlev.BackColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.label_curlev.BackColor = System.Drawing.Color.MidnightBlue;
             this.label_curlev.ForeColor = System.Drawing.Color.LightGray;
             this.label_curlev.Location = new System.Drawing.Point(6, 20);
             this.label_curlev.Name = "label_curlev";
-            this.label_curlev.Size = new System.Drawing.Size(135, 17);
+            this.label_curlev.Size = new System.Drawing.Size(305, 17);
             this.label_curlev.TabIndex = 5;
             this.label_curlev.Text = "Current Level Name";
             // 
@@ -835,26 +842,43 @@
             // 
             // groupBox6
             // 
-            this.groupBox6.Controls.Add(this.trackBar2);
+            this.groupBox6.Controls.Add(this.cb_guardai);
+            this.groupBox6.Controls.Add(this.tbar_clock);
             this.groupBox6.Controls.Add(this.label8);
-            this.groupBox6.Dock = System.Windows.Forms.DockStyle.Right;
             this.groupBox6.ForeColor = System.Drawing.Color.MidnightBlue;
-            this.groupBox6.Location = new System.Drawing.Point(406, 0);
+            this.groupBox6.Location = new System.Drawing.Point(202, 3);
             this.groupBox6.Name = "groupBox6";
-            this.groupBox6.Size = new System.Drawing.Size(204, 347);
+            this.groupBox6.Size = new System.Drawing.Size(402, 341);
             this.groupBox6.TabIndex = 1;
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = "Other";
             // 
-            // trackBar2
+            // cb_guardai
             // 
-            this.trackBar2.Location = new System.Drawing.Point(9, 43);
-            this.trackBar2.Maximum = 50;
-            this.trackBar2.Name = "trackBar2";
-            this.trackBar2.Size = new System.Drawing.Size(189, 45);
-            this.trackBar2.TabIndex = 8;
-            this.trackBar2.TickStyle = System.Windows.Forms.TickStyle.Both;
-            this.trackBar2.Value = 10;
+            this.cb_guardai.Appearance = System.Windows.Forms.Appearance.Button;
+            this.cb_guardai.Checked = true;
+            this.cb_guardai.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cb_guardai.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.cb_guardai.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.cb_guardai.Location = new System.Drawing.Point(204, 18);
+            this.cb_guardai.Name = "cb_guardai";
+            this.cb_guardai.Size = new System.Drawing.Size(192, 30);
+            this.cb_guardai.TabIndex = 9;
+            this.cb_guardai.Text = "Guard AI";
+            this.cb_guardai.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.cb_guardai.UseVisualStyleBackColor = true;
+            this.cb_guardai.CheckedChanged += new System.EventHandler(this.cb_guardai_CheckedChanged);
+            // 
+            // tbar_clock
+            // 
+            this.tbar_clock.Location = new System.Drawing.Point(9, 43);
+            this.tbar_clock.Maximum = 50;
+            this.tbar_clock.Name = "tbar_clock";
+            this.tbar_clock.Size = new System.Drawing.Size(189, 45);
+            this.tbar_clock.TabIndex = 8;
+            this.tbar_clock.TickStyle = System.Windows.Forms.TickStyle.Both;
+            this.tbar_clock.Value = 10;
+            this.tbar_clock.ValueChanged += new System.EventHandler(this.tbar_clock_ValueChanged);
             // 
             // label8
             // 
@@ -973,6 +997,50 @@
             this.btn_resetcam.UseVisualStyleBackColor = true;
             this.btn_resetcam.Click += new System.EventHandler(this.btn_resetcam_Click);
             // 
+            // tabPage5
+            // 
+            this.tabPage5.BackColor = System.Drawing.Color.Silver;
+            this.tabPage5.Controls.Add(this.cb_onlynpc);
+            this.tabPage5.Controls.Add(this.list_npcs);
+            this.tabPage5.Location = new System.Drawing.Point(4, 29);
+            this.tabPage5.Name = "tabPage5";
+            this.tabPage5.Size = new System.Drawing.Size(614, 351);
+            this.tabPage5.TabIndex = 16;
+            this.tabPage5.Text = "FK$X Viewer";
+            // 
+            // cb_onlynpc
+            // 
+            this.cb_onlynpc.BackColor = System.Drawing.Color.Silver;
+            this.cb_onlynpc.Checked = true;
+            this.cb_onlynpc.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cb_onlynpc.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.cb_onlynpc.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.cb_onlynpc.ForeColor = System.Drawing.Color.MidnightBlue;
+            this.cb_onlynpc.Location = new System.Drawing.Point(455, 3);
+            this.cb_onlynpc.Name = "cb_onlynpc";
+            this.cb_onlynpc.Size = new System.Drawing.Size(151, 25);
+            this.cb_onlynpc.TabIndex = 1;
+            this.cb_onlynpc.Text = "Try Cleanup";
+            this.cb_onlynpc.UseVisualStyleBackColor = false;
+            this.cb_onlynpc.CheckedChanged += new System.EventHandler(this.cb_onlynpc_CheckedChanged);
+            // 
+            // list_npcs
+            // 
+            this.list_npcs.BackColor = System.Drawing.Color.Silver;
+            this.list_npcs.Cursor = System.Windows.Forms.Cursors.Default;
+            this.list_npcs.Font = new System.Drawing.Font("Franklin Gothic Medium", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.list_npcs.ForeColor = System.Drawing.Color.MidnightBlue;
+            this.list_npcs.FormattingEnabled = true;
+            this.list_npcs.HorizontalScrollbar = true;
+            this.list_npcs.ItemHeight = 15;
+            this.list_npcs.Location = new System.Drawing.Point(6, 3);
+            this.list_npcs.Name = "list_npcs";
+            this.list_npcs.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.list_npcs.Size = new System.Drawing.Size(443, 334);
+            this.list_npcs.Sorted = true;
+            this.list_npcs.TabIndex = 0;
+            this.list_npcs.SelectedIndexChanged += new System.EventHandler(this.list_npcs_SelectedIndexChanged);
+            // 
             // tabPage4
             // 
             this.tabPage4.BackColor = System.Drawing.Color.Silver;
@@ -1032,6 +1100,136 @@
             this.cb_fun_lanky.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.cb_fun_lanky.UseVisualStyleBackColor = true;
             this.cb_fun_lanky.CheckedChanged += new System.EventHandler(this.cb_fun_lanky_CheckedChanged);
+            // 
+            // tabPage6
+            // 
+            this.tabPage6.BackColor = System.Drawing.Color.Silver;
+            this.tabPage6.Controls.Add(this.label17);
+            this.tabPage6.Controls.Add(this.label16);
+            this.tabPage6.Controls.Add(this.label12);
+            this.tabPage6.Controls.Add(this.label15);
+            this.tabPage6.Controls.Add(this.label14);
+            this.tabPage6.Controls.Add(this.label13);
+            this.tabPage6.Controls.Add(this.label11);
+            this.tabPage6.Controls.Add(this.label10);
+            this.tabPage6.Cursor = System.Windows.Forms.Cursors.Default;
+            this.tabPage6.Location = new System.Drawing.Point(4, 29);
+            this.tabPage6.Name = "tabPage6";
+            this.tabPage6.Size = new System.Drawing.Size(614, 351);
+            this.tabPage6.TabIndex = 17;
+            this.tabPage6.Text = "Credits";
+            // 
+            // label17
+            // 
+            this.label17.BackColor = System.Drawing.Color.DarkGray;
+            this.label17.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.label17.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.label17.Font = new System.Drawing.Font("Franklin Gothic Medium", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label17.ForeColor = System.Drawing.Color.WhiteSmoke;
+            this.label17.Location = new System.Drawing.Point(6, 180);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(600, 26);
+            this.label17.TabIndex = 8;
+            this.label17.Text = "Gou (Insights of his trainer)";
+            this.label17.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label16
+            // 
+            this.label16.BackColor = System.Drawing.Color.DarkGray;
+            this.label16.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.label16.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.label16.Font = new System.Drawing.Font("Franklin Gothic Medium", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label16.ForeColor = System.Drawing.Color.WhiteSmoke;
+            this.label16.Location = new System.Drawing.Point(6, 206);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(600, 26);
+            this.label16.TabIndex = 7;
+            this.label16.Text = "SCRC (Warp Coordinates)";
+            this.label16.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label12
+            // 
+            this.label12.BackColor = System.Drawing.Color.DarkGray;
+            this.label12.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.label12.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.label12.Font = new System.Drawing.Font("Franklin Gothic Medium", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label12.ForeColor = System.Drawing.Color.WhiteSmoke;
+            this.label12.Location = new System.Drawing.Point(6, 154);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(600, 26);
+            this.label12.TabIndex = 6;
+            this.label12.Text = "zami (Pointer Magic)";
+            this.label12.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label15
+            // 
+            this.label15.BackColor = System.Drawing.Color.DarkGray;
+            this.label15.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.label15.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.label15.Font = new System.Drawing.Font("Franklin Gothic Medium", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label15.ForeColor = System.Drawing.Color.WhiteSmoke;
+            this.label15.Location = new System.Drawing.Point(6, 102);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(600, 26);
+            this.label15.TabIndex = 5;
+            this.label15.Text = "NiV-L-A";
+            this.label15.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label14
+            // 
+            this.label14.BackColor = System.Drawing.Color.Gray;
+            this.label14.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.label14.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.label14.Font = new System.Drawing.Font("Franklin Gothic Medium", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label14.ForeColor = System.Drawing.Color.LightGray;
+            this.label14.Location = new System.Drawing.Point(6, 128);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(600, 26);
+            this.label14.TabIndex = 4;
+            this.label14.Text = "Other";
+            this.label14.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label13
+            // 
+            this.label13.BackColor = System.Drawing.Color.DarkGray;
+            this.label13.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.label13.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.label13.Font = new System.Drawing.Font("Franklin Gothic Medium", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label13.ForeColor = System.Drawing.Color.WhiteSmoke;
+            this.label13.Location = new System.Drawing.Point(6, 76);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(600, 26);
+            this.label13.TabIndex = 3;
+            this.label13.Text = "Luminar Light (EE Base Finder)";
+            this.label13.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label11
+            // 
+            this.label11.BackColor = System.Drawing.Color.Gray;
+            this.label11.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.label11.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.label11.Font = new System.Drawing.Font("Franklin Gothic Medium", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label11.ForeColor = System.Drawing.Color.LightGray;
+            this.label11.Location = new System.Drawing.Point(6, 50);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(600, 26);
+            this.label11.TabIndex = 1;
+            this.label11.Text = "Code";
+            this.label11.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label10
+            // 
+            this.label10.BackColor = System.Drawing.Color.DimGray;
+            this.label10.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.label10.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.label10.Font = new System.Drawing.Font("Franklin Gothic Medium", 20.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label10.ForeColor = System.Drawing.Color.LightGray;
+            this.label10.Location = new System.Drawing.Point(6, 0);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(600, 50);
+            this.label10.TabIndex = 0;
+            this.label10.Text = "Helpers";
+            this.label10.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // label_base
             // 
@@ -1099,25 +1297,24 @@
             this.groupBox3.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tbar_scale)).EndInit();
             this.tabPage2.ResumeLayout(false);
-            this.groupBox11.ResumeLayout(false);
-            this.groupBox11.PerformLayout();
             this.groupBox10.ResumeLayout(false);
-            this.groupBox10.PerformLayout();
             this.gb_loadmap.ResumeLayout(false);
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
             this.tabPage3.ResumeLayout(false);
             this.groupBox6.ResumeLayout(false);
             this.groupBox6.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tbar_clock)).EndInit();
             this.groupBox5.ResumeLayout(false);
             this.groupBox5.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tbar_fov)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbar_rendDist)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbar_camspeed)).EndInit();
+            this.tabPage5.ResumeLayout(false);
             this.tabPage4.ResumeLayout(false);
             this.groupBox9.ResumeLayout(false);
             this.groupBox7.ResumeLayout(false);
+            this.tabPage6.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -1168,7 +1365,7 @@
         private System.Windows.Forms.TrackBar tbar_fov;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.GroupBox groupBox6;
-        private System.Windows.Forms.TrackBar trackBar2;
+        private System.Windows.Forms.TrackBar tbar_clock;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.CheckBox cb_atttarg;
         private System.Windows.Forms.ToolTip toolTips;
@@ -1194,12 +1391,23 @@
         private System.Windows.Forms.GroupBox groupBox7;
         private System.Windows.Forms.Button btn_randmap;
         private System.Windows.Forms.GroupBox groupBox10;
-        private System.Windows.Forms.GroupBox groupBox11;
-        private System.Windows.Forms.Label label9;
         private System.Windows.Forms.ComboBox comboBox1;
         private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Label label10;
         private System.Windows.Forms.ComboBox cb_loadas;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.TabPage tabPage5;
+        private System.Windows.Forms.ListBox list_npcs;
+        private System.Windows.Forms.TabPage tabPage6;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.Label label16;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.CheckBox cb_onlynpc;
+        private System.Windows.Forms.CheckBox cb_guardai;
     }
 }
 
